@@ -72,7 +72,13 @@ class ViewController: UIViewController {
 							let decoder = JSONDecoder()
 							do
 								{
-									let jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
+									var jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
+                                    //capitalise the first letter of the original
+                                    var original = jsonData.original.lowercased()
+                                    original = original.capitalized
+                                    jsonData.original = original
+                                    
+                                    
 									germanWords.append(jsonData)
 									saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
 									germanLists[currentList].words.removeLast() //remove the loading indicator
@@ -147,7 +153,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
 		{
 			let selectedIndex = indexPath.row - 1
 			
-			let alert = UIAlertController(title: "Word: \(germanLists[currentList].words[selectedIndex].original)", message: "Translation : " + germanLists[currentList].words[selectedIndex].translation + "\n\nGerman Sentence : " + germanLists[currentList].words[selectedIndex].german_sentence + "\n\nEnglish Translation : " + germanLists[currentList].words[selectedIndex].english_translation, preferredStyle: .alert)
+            var germanSentence = germanLists[currentList].words[selectedIndex].german_sentence
+            var englishSentence = germanLists[currentList].words[selectedIndex].english_translation
+            
+            if germanSentence == ""
+            { germanSentence = "Unavailable" }
+            if englishSentence == ""
+            { englishSentence = "Unavailable" }
+            
+			let alert = UIAlertController(title: "Word: \(germanLists[currentList].words[selectedIndex].original)", message: "Translation : " + germanLists[currentList].words[selectedIndex].translation + "\n\nGerman Sentence : " + germanSentence + "\n\nEnglish Translation : " + englishSentence, preferredStyle: .alert)
 			alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
 			self.present(alert, animated: true, completion: nil)
 		}

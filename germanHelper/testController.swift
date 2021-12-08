@@ -34,6 +34,7 @@ class testController: UIViewController {
 	func prepareTest()
 	{
 		score = 0
+        
 		currentQuestion = 0
 		questions = []
 		//put words into a random order
@@ -41,32 +42,106 @@ class testController: UIViewController {
 		
 		for word in testList
 		{
-			//IF USING SENTENCES MUST CHECK IF THERE IS A SENTENCE AVAILABLE FOR THE WORD, SOME DON'T HAVE THEM
-			
+            //Now we decide the question type, IF USING SENTENCES MUST CHECK IF THERE IS A SENTENCE AVAILABLE FOR THE WORD, SOME DON'T HAVE THEM
+            var randomNum = 0
+            if word.german_sentence != "" && word.english_translation != ""
+            { randomNum = Int.random(in: 0...3) }
+            else //only 1 word questions
+            { randomNum = Int.random(in: 0...1) }
+            //German to English, 1 word
+            
+            var excludingWords: [germanObject] = []
+            if randomNum == 2 || randomNum == 3 //need to exclude the sentences if there isnt any available
+            {
+                for item in testList
+                {
+                    if item.german_sentence == "" || item.english_translation == ""
+                    {
+                        excludingWords.append(item)
+                    }
+                }
+            }
+            
 			//for answers get some other random items from the testList
-			let answer1 = getRandomElement(list: testList, excluding: [word])
-			let answer2 = getRandomElement(list: testList, excluding: [word, answer1])
-			let answer3 = getRandomElement(list: testList, excluding: [word, answer1, answer2])
-			let correctAnswer = word
-			
-			questions.append(questionObject(questionText: "What is the English translation of \(word.original)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer))
+			let answer1 = getRandomElement(list: testList, excluding: [word]+excludingWords)
+			let answer2 = getRandomElement(list: testList, excluding: [word, answer1]+excludingWords)
+			let answer3 = getRandomElement(list: testList, excluding: [word, answer1, answer2]+excludingWords)
+            let correctAnswer = word
+            
+            
+            if randomNum == 0
+            {
+                questions.append(questionObject(questionText: "What is the English translation of \(word.original)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglish"))
+            }
+            //English to German, 1 word
+            else if randomNum == 1
+            {
+                questions.append(questionObject(questionText: "What is the German translation of \(word.translation)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "EnglishToGerman"))
+            }
+            //German to English, Sentence
+            else if randomNum == 2
+            {
+                questions.append(questionObject(questionText: "Translate: \(word.german_sentence)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglishSentence"))
+            }
+            //English to German, Sentence
+            else if randomNum == 3
+            {
+                questions.append(questionObject(questionText: "Translate: \(word.english_translation)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "EnglishToGermanSentence"))
+            }
+            
 		}
-		
-		prepareQuestion()
+        
+        prepareQuestion()
 	}
-	func prepareQuestion()
+    func prepareQuestion()
 	{
 		answerIndexList.shuffle()
-		
-		question.text = questions[currentQuestion].questionText
-		
-		button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].translation, for: .normal)
-		button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].translation, for: .normal)
-		button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].translation, for: .normal)
-		button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].translation, for: .normal)
-	}
-	func answerClicked(button: Int)
-	{
+        
+        if currentQuestion >= questions.count //if the user spams a button it could lead to an out of range error
+        {
+            let alert = UIAlertController(title: "Test Finished", message: "You got \(score) / \(questions.count)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { alert in
+                _ = self.navigationController?.popViewController(animated: true)
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            question.text = questions[currentQuestion].questionText
+            
+            if questions[currentQuestion].questionType == "GermanToEnglish" //answers should be in English
+            {
+                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].translation, for: .normal)
+                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].translation, for: .normal)
+                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].translation, for: .normal)
+                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].translation, for: .normal)
+            }
+            else if questions[currentQuestion].questionType == "EnglishToGerman" //answers in german
+            {
+                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].original, for: .normal)
+                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].original, for: .normal)
+                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].original, for: .normal)
+                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].original, for: .normal)
+            }
+            else if questions[currentQuestion].questionType == "GermanToEnglishSentence"
+            {
+                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].english_translation, for: .normal)
+                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].english_translation, for: .normal)
+                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].english_translation, for: .normal)
+                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].english_translation, for: .normal)
+            }
+            else if questions[currentQuestion].questionType == "EnglishToGermanSentence"
+            {
+                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].german_sentence, for: .normal)
+                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].german_sentence, for: .normal)
+                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].german_sentence, for: .normal)
+                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].german_sentence, for: .normal)
+            }
+        }
+        
+    }
+    func answerClicked(button: Int)
+    {
         buttonClickedTag = button
 		if questions[currentQuestion].answers[answerIndexList[button]].original == questions[currentQuestion].correctAnswer.original
 		{
@@ -120,6 +195,7 @@ class testController: UIViewController {
 		let questionText: String
 		let answers: [germanObject]
 		let correctAnswer: germanObject
+        let questionType: String
 	}
 	
 	@IBAction func button1(_ sender: Any) {

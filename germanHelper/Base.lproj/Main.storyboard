@@ -107,6 +107,7 @@
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E3r-Dk-u7X" customClass="answerButton" customModule="germanHelper" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="165" height="215.33333333333334"/>
+                                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                                                 <state key="normal" title="Button"/>
                                                 <connections>
                                                     <action selector="button1:" destination="LIH-U0-sFP" eventType="touchUpInside" id="T4Z-UW-PBC"/>
@@ -114,6 +115,7 @@
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lui-Q0-h4j" customClass="answerButton" customModule="germanHelper" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="225.33333333333337" width="165" height="215.33333333333337"/>
+                                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                                                 <state key="normal" title="Button"/>
                                                 <connections>
                                                     <action selector="button3:" destination="LIH-U0-sFP" eventType="touchUpInside" id="joL-Er-Fve"/>
@@ -126,6 +128,7 @@
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QCV-Tx-bJ2" customClass="answerButton" customModule="germanHelper" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="165" height="215.33333333333334"/>
+                                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                                                 <state key="normal" title="Button"/>
                                                 <connections>
                                                     <action selector="button2:" destination="LIH-U0-sFP" eventType="touchUpInside" id="Dx0-yh-VGs"/>
@@ -133,6 +136,7 @@
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VQK-Tf-tjr" customClass="answerButton" customModule="germanHelper" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="225.33333333333337" width="165" height="215.33333333333337"/>
+                                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                                                 <state key="normal" title="Button"/>
                                                 <connections>
                                                     <action selector="button4:" destination="LIH-U0-sFP" eventType="touchUpInside" id="jwn-Ra-cNb"/>
