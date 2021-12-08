@@ -67,14 +67,43 @@ class testController: UIViewController {
 	}
 	func answerClicked(button: Int)
 	{
+        buttonClickedTag = button
 		if questions[currentQuestion].answers[answerIndexList[button]].original == questions[currentQuestion].correctAnswer.original
 		{
+            if button == 0
+            { button1Outlet.setTitleColor(.systemGreen, for: .normal) }
+            else if button == 1
+            { button2Outlet.setTitleColor(.systemGreen, for: .normal) }
+            else if button == 2
+            { button3Outlet.setTitleColor(.systemGreen, for: .normal) }
+            else if button == 3
+            { button4Outlet.setTitleColor(.systemGreen, for: .normal) }
+            
 			score += 1
 		}
+        else
+        {
+            if button == 0
+            { button1Outlet.setTitleColor(.red, for: .normal) }
+            else if button == 1
+            { button2Outlet.setTitleColor(.red, for: .normal) }
+            else if button == 2
+            { button3Outlet.setTitleColor(.red, for: .normal) }
+            else if button == 3
+            { button4Outlet.setTitleColor(.red, for: .normal) }
+        }
+        
 		if currentQuestion != questions.count - 1
 		{
-			currentQuestion += 1
-			prepareQuestion()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.button1Outlet.reset()
+                self.button2Outlet.reset()
+                self.button3Outlet.reset()
+                self.button4Outlet.reset()
+                
+                self.currentQuestion += 1
+                self.prepareQuestion()
+            }
 		}
 		else
 		{
@@ -125,4 +154,12 @@ class testController: UIViewController {
 		}
 		return false
 	}
+}
+
+extension UIButton
+{
+    func changeColour(colour: UIColor)
+    {
+        self.backgroundColor = colour
+    }
 }

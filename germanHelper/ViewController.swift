@@ -14,8 +14,6 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		print(Int.random(in: 0...2))
-		
 		tableView.delegate = self
 		tableView.dataSource = self
 		
