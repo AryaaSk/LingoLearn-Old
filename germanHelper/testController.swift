@@ -90,7 +90,6 @@ class testController: UIViewController {
             }
             
 		}
-        print(questions)
         prepareQuestion()
 	}
     func prepareQuestion()

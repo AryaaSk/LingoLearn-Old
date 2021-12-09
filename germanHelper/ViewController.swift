@@ -11,6 +11,9 @@ class ViewController: UIViewController {
 
 	@IBOutlet var tableView: UITableView!
 	
+    var multipleWords = 0
+    var wordStorage: [germanObject] = []
+    
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -70,7 +73,6 @@ class ViewController: UIViewController {
                 URLSession.shared.dataTask(with: url) { data, response, error in
                     if let jsonString = String(data: data!, encoding: .utf8)
                     {
-                        print(jsonString)
                         DispatchQueue.main.async {
                             let decoder = JSONDecoder()
                             do
@@ -81,13 +83,33 @@ class ViewController: UIViewController {
                                     original = original.capitalized
                                     jsonData.original = original
                                     
+                                    self.wordStorage.append(jsonData)
                                     
-                                    germanWords.append(jsonData)
-                                    saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
-                                    germanLists[currentList].words.removeLast() //remove the loading indicator
+                                    if self.multipleWords > 0
+                                    {
+                                        //self.wordStorage.append(jsonData)
+                                        self.multipleWords -= 1
+                                    }
+                                    if self.multipleWords == 0
+                                    {
+                                        //first remove all the ... indicators
+                                        var i = 0
+                                        while i != self.wordStorage.count
+                                        {
+                                            germanLists[currentList].words.removeLast() //remove the loading indicator
+                                            i += 1
+                                        }
+                                        for item in self.wordStorage
+                                        {
+                                            print(item)
+                                            germanWords.append(item)
+                                            germanLists[currentList].words.append(item)
+                                            
+                                            saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
+                                            saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                                        }
+                                    }
                                     
-                                    germanLists[currentList].words.append(jsonData)
-                                    saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
                                     self.tableView.reloadData()
                                 }
                             catch
@@ -174,8 +196,43 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
 			alertController.addTextField { textfield in
 				textfield.placeholder = "Word"
 			}
-			alertController.addAction(UIAlertAction(title: "Add", style: .default, handler: { alert in
-				let textfield = alertController.textFields![0] as UITextField
+            alertController.addAction(UIAlertAction(title: "Add Multiple Words", style: .default, handler: { alert in
+                self.wordStorage = []
+                
+                let textfield = alertController.textFields![0] as UITextField
+                let text = textfield.text!
+                
+                var textList = Array(text) //filter out all the puncuation
+                var i = 0
+                while i != textList.count
+                {
+                    if textList[i] == "," || textList[i] == "."
+                    { textList.remove(at: i) }
+                    else
+                    { i += 1 }
+                }
+                
+                var wordList = String(textList).components(separatedBy: [" "]).filter({!$0.isEmpty})
+                //filter out the words like ein, eine, einen, der, die, das
+                i = 0
+                while i != wordList.count
+                {
+                    if wordList[i].lowercased() == "ein" || wordList[i].lowercased() == "eine" || wordList[i].lowercased() == "einen" || wordList[i].lowercased() == "der" || wordList[i].lowercased() == "die" || wordList[i].lowercased() == "das"
+                    { wordList.remove(at: i) }
+                    else
+                    { i += 1 }
+                }
+                
+                //now we go through the list and search each word 1 by 1
+                self.multipleWords = wordList.count
+                for word in wordList
+                {
+                    self.search(text: word)
+                }
+                
+            }))
+            alertController.addAction(UIAlertAction(title: "Add", style: .default, handler: { alert in
+                let textfield = alertController.textFields![0] as UITextField
 				self.search(text: textfield.text!)
 			}))
 			alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
