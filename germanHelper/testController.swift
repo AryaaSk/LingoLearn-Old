@@ -90,7 +90,7 @@ class testController: UIViewController {
             }
             
 		}
-        
+        print(questions)
         prepareQuestion()
 	}
     func prepareQuestion()
@@ -111,6 +111,13 @@ class testController: UIViewController {
             
             if questions[currentQuestion].questionType == "GermanToEnglish" //answers should be in English
             {
+                /*
+                button1Outlet.titleLabel?.font = .systemFont(ofSize: 25)
+                button2Outlet.titleLabel?.font = .systemFont(ofSize: 25)
+                button3Outlet.titleLabel?.font = .systemFont(ofSize: 25)
+                button4Outlet.titleLabel?.font = .systemFont(ofSize: 25)
+                */ //caused werid animations
+                
                 button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].translation, for: .normal)
                 button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].translation, for: .normal)
                 button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].translation, for: .normal)

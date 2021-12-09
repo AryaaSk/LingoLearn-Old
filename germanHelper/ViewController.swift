@@ -63,44 +63,47 @@ class ViewController: UIViewController {
 		if wordDownloaded == false
 		{
 			let urlString = "https://europe-west2-functions-hello-world-334109.cloudfunctions.net/functions-hello-world?word=" + germanWord
-			if let url = URL(string: urlString)
-			{
-				URLSession.shared.dataTask(with: url) { data, response, error in
-					if let jsonString = String(data: data!, encoding: .utf8)
-					{
-						DispatchQueue.main.async {
-							let decoder = JSONDecoder()
-							do
-								{
-									var jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
+            
+            if let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
+                let url = URL(string: encoded)
+            {
+                URLSession.shared.dataTask(with: url) { data, response, error in
+                    if let jsonString = String(data: data!, encoding: .utf8)
+                    {
+                        print(jsonString)
+                        DispatchQueue.main.async {
+                            let decoder = JSONDecoder()
+                            do
+                                {
+                                    var jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
                                     //capitalise the first letter of the original
                                     var original = jsonData.original.lowercased()
                                     original = original.capitalized
                                     jsonData.original = original
                                     
                                     
-									germanWords.append(jsonData)
-									saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
-									germanLists[currentList].words.removeLast() //remove the loading indicator
-									
-									germanLists[currentList].words.append(jsonData)
-									saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-									self.tableView.reloadData()
-								}
-							catch
-							{
-								print(error)
-								germanLists[currentList].words.removeLast() //remove the loading indicator
-								self.tableView.reloadData()
-								
-								let alert = UIAlertController(title: "Invalid Word", message: "Please enter a valid word", preferredStyle: .alert)
-								alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-								self.present(alert, animated: true, completion: nil)
-							}
-						}
-					}
-				}.resume()
-			}
+                                    germanWords.append(jsonData)
+                                    saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
+                                    germanLists[currentList].words.removeLast() //remove the loading indicator
+                                    
+                                    germanLists[currentList].words.append(jsonData)
+                                    saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                                    self.tableView.reloadData()
+                                }
+                            catch
+                            {
+                                print(error)
+                                germanLists[currentList].words.removeLast() //remove the loading indicator
+                                self.tableView.reloadData()
+                                
+                                let alert = UIAlertController(title: "Invalid Word", message: "Please enter a valid word", preferredStyle: .alert)
+                                alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                            }
+                        }
+                    }
+                }.resume()
+            }
 		}
 		else
 		{

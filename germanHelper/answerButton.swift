@@ -36,8 +36,7 @@ class answerButton: UIButton {
 	}
     func reset()
     {
-        //text size changes depending on question
-        self.titleLabel?.font = .systemFont(ofSize: 25)
+        self.titleLabel?.font = .systemFont(ofSize: 22)
         
         self.setTitleColor(.label, for: .normal)
         self.setTitleColor(.gray, for: .highlighted)
