@@ -101,13 +101,13 @@ class ViewController: UIViewController {
                                         }
                                         for item in self.wordStorage
                                         {
-                                            print(item)
                                             germanWords.append(item)
                                             germanLists[currentList].words.append(item)
                                             
                                             saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
                                             saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
                                         }
+                                        self.wordStorage = []
                                     }
                                     
                                     self.tableView.reloadData()
@@ -196,9 +196,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
 			alertController.addTextField { textfield in
 				textfield.placeholder = "Word"
 			}
+            /*
             alertController.addAction(UIAlertAction(title: "Add Multiple Words", style: .default, handler: { alert in
-                self.wordStorage = []
-                
                 let textfield = alertController.textFields![0] as UITextField
                 let text = textfield.text!
                 
@@ -224,15 +223,20 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
                 }
                 
                 //now we go through the list and search each word 1 by 1
+                self.wordStorage = []
                 self.multipleWords = wordList.count
                 for word in wordList
                 {
                     self.search(text: word)
                 }
                 
+                //need to filter out the ... in the main list since this feature is quite buggy now
+                
             }))
+            */
             alertController.addAction(UIAlertAction(title: "Add", style: .default, handler: { alert in
                 let textfield = alertController.textFields![0] as UITextField
+                self.wordStorage = []
 				self.search(text: textfield.text!)
 			}))
 			alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
