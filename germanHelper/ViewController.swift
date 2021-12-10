@@ -13,6 +13,7 @@ class ViewController: UIViewController {
 	
     var multipleWords = 0
     var wordStorage: [germanObject] = []
+    var clickedMultiWord = false
     
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -77,12 +78,9 @@ class ViewController: UIViewController {
                             let decoder = JSONDecoder()
                             do
                                 {
-                                    var jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
-                                    //capitalise the first letter of the original
-                                    var original = jsonData.original.lowercased()
-                                    original = original.capitalized
-                                    jsonData.original = original
+                                    let jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
                                     
+                                    /*
                                     self.wordStorage.append(jsonData)
                                     
                                     if self.multipleWords > 0
@@ -111,16 +109,23 @@ class ViewController: UIViewController {
                                     }
                                     
                                     self.tableView.reloadData()
+                                     */
+                                    
+                                    self.completion(jsonData: jsonData, alreadyContained: false)
                                 }
                             catch
                             {
                                 print(error)
                                 germanLists[currentList].words.removeLast() //remove the loading indicator
+                                self.multipleWords -= 1
                                 self.tableView.reloadData()
                                 
-                                let alert = UIAlertController(title: "Invalid Word", message: "Please enter a valid word", preferredStyle: .alert)
-                                alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-                                self.present(alert, animated: true, completion: nil)
+                                if self.clickedMultiWord == false
+                                {
+                                    let alert = UIAlertController(title: "Invalid Word", message: "Please enter a valid word", preferredStyle: .alert)
+                                    alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                                    self.present(alert, animated: true, completion: nil)
+                                }
                             }
                         }
                     }
@@ -133,14 +138,56 @@ class ViewController: UIViewController {
 			{
 				if word.original.lowercased() == germanWord.lowercased()
 				{
+                    completion(jsonData: word, alreadyContained: true)
+                    
+                    /*
 					germanLists[currentList].words.removeLast()
 					germanLists[currentList].words.append(word)
 					saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-					tableView.reloadData()
+					tableView.reloadData()*/
 				}
 			}
 		}
 	}
+    func completion(jsonData: germanObject, alreadyContained: Bool)
+    {
+        var jsonData = jsonData
+        //capitalise the first letter of the original
+        var original = jsonData.original.lowercased()
+        original = original.capitalized
+        jsonData.original = original
+        
+        if alreadyContained == false
+        {
+            germanWords.append(jsonData)
+        }
+        
+        //find a ...
+        var i = 0
+        while i != germanLists[currentList].words.count
+        {
+            if germanLists[currentList].words[i].original == "..."
+            {
+                germanLists[currentList].words.remove(at: i)
+                if i == germanLists[currentList].words.count
+                {
+                    germanLists[currentList].words.append(jsonData)
+                }
+                else
+                {
+                    germanLists[currentList].words.insert(jsonData, at: i)
+                }
+                break
+            }
+            else
+            { i += 1 }
+        }
+        
+        saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+        saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
+        
+        tableView.reloadData()
+    }
 	
 }
 
@@ -196,8 +243,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
 			alertController.addTextField { textfield in
 				textfield.placeholder = "Word"
 			}
-            /*
+            
             alertController.addAction(UIAlertAction(title: "Add Multiple Words", style: .default, handler: { alert in
+                self.clickedMultiWord = true
                 let textfield = alertController.textFields![0] as UITextField
                 let text = textfield.text!
                 
@@ -233,8 +281,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
                 //need to filter out the ... in the main list since this feature is quite buggy now
                 
             }))
-            */
+            
             alertController.addAction(UIAlertAction(title: "Add", style: .default, handler: { alert in
+                self.clickedMultiWord = false
                 let textfield = alertController.textFields![0] as UITextField
                 self.wordStorage = []
 				self.search(text: textfield.text!)

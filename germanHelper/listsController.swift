@@ -63,13 +63,15 @@ extension listsController: UITableViewDelegate, UITableViewDataSource
 	
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		if germanLists.count != 1
-		{
-			let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { action, sourceView, completitionHandler in
-				germanLists.remove(at: indexPath.row) //always remove from array before removing from tableview with animation
-				saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-				tableView.deleteRows(at: [indexPath], with: .automatic)
-			}
-			let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction])
+        {
+            let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { action, sourceView, completitionHandler in
+                germanLists.remove(at: indexPath.row) //always remove from array before removing from tableview with animation
+                if currentList != 0
+                { currentList -= 1 }
+                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+            let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction])
 			return swipeConfig
 		}
 		else
