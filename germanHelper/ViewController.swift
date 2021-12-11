@@ -63,6 +63,22 @@ class ViewController: UIViewController {
 			if word.original.lowercased() == germanWord.lowercased()
 			{ wordDownloaded = true }
 		}
+        //check if word is in list already
+        for word in germanLists[currentList].words
+        {
+            if germanWord.lowercased() == word.original.lowercased()
+            {
+                //the word is already in the list
+                if clickedMultiWord == false
+                {
+                    let alert = UIAlertController(title: "Word already in list", message: "Cannot have duplicate words", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+                germanLists[currentList].words.removeLast() //remove the loading indicator
+                return
+            }
+        }
 		
 		if wordDownloaded == false
 		{
@@ -169,6 +185,7 @@ class ViewController: UIViewController {
             if germanLists[currentList].words[i].original == "..."
             {
                 germanLists[currentList].words.remove(at: i)
+                //replace word
                 if i == germanLists[currentList].words.count
                 {
                     germanLists[currentList].words.append(jsonData)
@@ -209,7 +226,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
 		else
 		{
 			let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-			
+            
 			cell.textLabel?.text = germanLists[currentList].words[indexPath.row - 1].original
 			if germanLists[currentList].words[indexPath.row - 1].original == "..."
 			{ cell.isUserInteractionEnabled = false }
