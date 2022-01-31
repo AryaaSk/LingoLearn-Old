@@ -82,7 +82,7 @@ class ViewController: UIViewController {
 		
 		if wordDownloaded == false
 		{
-			let urlString = "https://europe-west2-functions-hello-world-334109.cloudfunctions.net/functions-hello-world?word=" + germanWord
+			let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?word=" + germanWord
             
             if let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
                 let url = URL(string: encoded)
@@ -256,12 +256,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
 		}
 		else
 		{
-			let alertController = UIAlertController(title: "Add New Word", message: "Enter a german word to help you study", preferredStyle: .alert)
+			let alertController = UIAlertController(title: "Add Words", message: "Type 1 or more words separated by a space or a comma", preferredStyle: .alert)
 			alertController.addTextField { textfield in
 				textfield.placeholder = "Word"
 			}
             
-            alertController.addAction(UIAlertAction(title: "Add Multiple Words", style: .default, handler: { alert in
+            alertController.addAction(UIAlertAction(title: "Add Word(s)", style: .default, handler: { alert in
                 self.clickedMultiWord = true
                 let textfield = alertController.textFields![0] as UITextField
                 let text = textfield.text!
@@ -299,12 +299,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
                 
             }))
             
+            /*
             alertController.addAction(UIAlertAction(title: "Add", style: .default, handler: { alert in
                 self.clickedMultiWord = false
                 let textfield = alertController.textFields![0] as UITextField
                 self.wordStorage = []
 				self.search(text: textfield.text!)
-			}))
+			}))*/
+            
 			alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 			self.present(alertController, animated: true, completion: nil)
 		}
