@@ -13,6 +13,8 @@ struct germanObject: Codable
 	let translation: String
 	let german_sentence: String
 	let english_translation: String
+    let word_type: String
+    let gender: String
 }
 struct germanList: Codable {
 	let name: String

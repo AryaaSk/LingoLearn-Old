@@ -53,7 +53,7 @@ class ViewController: UIViewController {
 		//when search button is clicked, add word to german words list and then add it to the current list separately
 		let germanWord = text
 		
-		germanLists[currentList].words.append(germanObject(original: "...", translation: "", german_sentence: "", english_translation: ""))
+        germanLists[currentList].words.append(germanObject(original: "...", translation: "", german_sentence: "", english_translation: "", word_type: "", gender: ""))
 		self.tableView.reloadData()
 		
 		//check if word is already in germanWords
@@ -95,38 +95,6 @@ class ViewController: UIViewController {
                             do
                                 {
                                     let jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
-                                    
-                                    /*
-                                    self.wordStorage.append(jsonData)
-                                    
-                                    if self.multipleWords > 0
-                                    {
-                                        //self.wordStorage.append(jsonData)
-                                        self.multipleWords -= 1
-                                    }
-                                    if self.multipleWords == 0
-                                    {
-                                        //first remove all the ... indicators
-                                        var i = 0
-                                        while i != self.wordStorage.count
-                                        {
-                                            germanLists[currentList].words.removeLast() //remove the loading indicator
-                                            i += 1
-                                        }
-                                        for item in self.wordStorage
-                                        {
-                                            germanWords.append(item)
-                                            germanLists[currentList].words.append(item)
-                                            
-                                            saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
-                                            saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-                                        }
-                                        self.wordStorage = []
-                                    }
-                                    
-                                    self.tableView.reloadData()
-                                     */
-                                    
                                     self.completion(jsonData: jsonData, alreadyContained: false)
                                 }
                             catch
@@ -155,12 +123,6 @@ class ViewController: UIViewController {
 				if word.original.lowercased() == germanWord.lowercased()
 				{
                     completion(jsonData: word, alreadyContained: true)
-                    
-                    /*
-					germanLists[currentList].words.removeLast()
-					germanLists[currentList].words.append(word)
-					saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-					tableView.reloadData()*/
 				}
 			}
 		}
@@ -171,6 +133,15 @@ class ViewController: UIViewController {
         //capitalise the first letter of the original
         var original = jsonData.original.lowercased()
         original = original.capitalized
+        
+        //add der, die or das
+        if jsonData.gender == "Masculine"
+        { original = "der " + original }
+        if jsonData.gender == "Feminine"
+        { original = "die " + original }
+        if jsonData.gender == "Neuter"
+        { original = "das " + original }
+        
         jsonData.original = original
         
         if alreadyContained == false
@@ -250,7 +221,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
             if englishSentence == ""
             { englishSentence = "Unavailable" }
             
-			let alert = UIAlertController(title: "Word: \(germanLists[currentList].words[selectedIndex].original)", message: "Translation : " + germanLists[currentList].words[selectedIndex].translation + "\n\nGerman Sentence : " + germanSentence + "\n\nEnglish Translation : " + englishSentence, preferredStyle: .alert)
+            var alertMessage = "Translation : " + germanLists[currentList].words[selectedIndex].translation + "\n\nGerman Sentence : " + germanSentence + "\n\nEnglish Translation : " + englishSentence + "\n\nWord Type : " + germanLists[currentList].words[selectedIndex].word_type
+            if germanLists[currentList].words[selectedIndex].gender != "None"
+            { alertMessage = alertMessage + "\n\nGender : " + germanLists[currentList].words[selectedIndex].gender }
+            
+			let alert = UIAlertController(title: "Word: \(germanLists[currentList].words[selectedIndex].original)", message: alertMessage, preferredStyle: .alert)
 			alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
 			self.present(alert, animated: true, completion: nil)
 		}
