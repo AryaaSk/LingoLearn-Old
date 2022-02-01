@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     var clickedMultiWord = false
     
     @IBOutlet var collectionView: UICollectionView!
+    @IBOutlet var addWordButton: UIButton!
     override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -25,6 +26,19 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(clickedOnWord(notification:)), name: Notification.Name("clickedWord"), object: nil)
 		self.title = germanLists[currentList].name
 	}
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        //layout.sectionInset = UIEdgeInsets(top: 20, left: 0, bottom: 10, right: 0)
+        layout.itemSize = CGSize(width: 115, height: 115) //can also make this screenwidth/height / 3
+        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 10
+        collectionView!.collectionViewLayout = layout
+        
+        //need to add  a bottom border to the addNewWords button
+    }
 	
 	@objc func reloadView()
 	{
@@ -250,7 +264,6 @@ class ViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
-    
 	
 }
 
@@ -269,118 +282,3 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource
     }
 }
 
-/*
-
-extension ViewController: UITableViewDelegate, UITableViewDataSource
-{
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return germanLists[currentList].words.count + 1
-	}
-	
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		if indexPath.row == 0
-		{
-			//add item cell
-			let cell = tableView.dequeueReusableCell(withIdentifier: "addNewWord", for: indexPath) as! addNewWordCell
-			cell.centerLabel.text = "Add Word"
-			cell.centerLabel.textColor = .link
-			return cell
-		}
-		else
-		{
-			let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            
-			cell.textLabel?.text = germanLists[currentList].words[indexPath.row - 1].original
-			if germanLists[currentList].words[indexPath.row - 1].original == "..."
-			{ cell.isUserInteractionEnabled = false }
-			else
-			{ cell.isUserInteractionEnabled = true }
-			return cell
-		}
-	}
-	
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		tableView.deselectRow(at: indexPath, animated: true)
-		if indexPath.row != 0
-		{
-			
-		}
-		else
-		{
-            let alertController = UIAlertController(title: "Add Words", message: "Type 1 or more words separated by a space or a comma", preferredStyle: .alert)
-            alertController.addTextField { textfield in
-                textfield.placeholder = "Word"
-            }
-            
-            alertController.addAction(UIAlertAction(title: "Add Word(s)", style: .default, handler: { alert in
-                self.clickedMultiWord = true
-                let textfield = alertController.textFields![0] as UITextField
-                let text = textfield.text!
-                
-                var textList = Array(text) //filter out all the puncuation
-                var i = 0
-                while i != textList.count
-                {
-                    if textList[i] == "," || textList[i] == "."
-                    { textList.remove(at: i) }
-                    else
-                    { i += 1 }
-                }
-                
-                var wordList = String(textList).components(separatedBy: [" "]).filter({!$0.isEmpty})
-                //filter out the words like ein, eine, einen, der, die, das
-                i = 0
-                while i != wordList.count
-                {
-                    if wordList[i].lowercased() == "ein" || wordList[i].lowercased() == "eine" || wordList[i].lowercased() == "einen" || wordList[i].lowercased() == "der" || wordList[i].lowercased() == "die" || wordList[i].lowercased() == "das"
-                    { wordList.remove(at: i) }
-                    else
-                    { i += 1 }
-                }
-                
-                //now we go through the list and search each word 1 by 1
-                self.wordStorage = []
-                self.multipleWords = wordList.count
-                for word in wordList
-                {
-                    self.search(text: word)
-                }
-                
-                //need to filter out the ... in the main list since this feature is quite buggy now
-                
-            }))
-            
-            /*
-             alertController.addAction(UIAlertAction(title: "Add", style: .default, handler: { alert in
-             self.clickedMultiWord = false
-             let textfield = alertController.textFields![0] as UITextField
-             self.wordStorage = []
-             self.search(text: textfield.text!)
-             }))*/
-            
-            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            self.present(alertController, animated: true, completion: nil)
-		}
-		
-	}
-	
-	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-		if indexPath.row != 0
-		{
-			let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { action, sourceView, completitionHandler in
-				germanLists[currentList].words.remove(at: indexPath.row - 1) //always remove from array before removing from tableview with animation
-				saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-				tableView.deleteRows(at: [indexPath], with: .automatic)
-			}
-			let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction])
-			return swipeConfig
-		}
-		else
-		{
-			return nil
-		}
-		
-		
-	}
-}
-*/
