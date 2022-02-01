@@ -18,6 +18,7 @@
 		E49F200C275F2E9B007D39D7 /* addNewWordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F200B275F2E9B007D39D7 /* addNewWordCell.swift */; };
 		E49F200E275FC134007D39D7 /* testController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F200D275FC134007D39D7 /* testController.swift */; };
 		E49F2012275FDA2B007D39D7 /* answerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49F2011275FDA2B007D39D7 /* answerButton.swift */; };
+		E4C001ED27A900EA0084377B /* wordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C001EC27A900EA0084377B /* wordCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		E49F200B275F2E9B007D39D7 /* addNewWordCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addNewWordCell.swift; sourceTree = "<group>"; };
 		E49F200D275FC134007D39D7 /* testController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testController.swift; sourceTree = "<group>"; };
 		E49F2011275FDA2B007D39D7 /* answerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = answerButton.swift; sourceTree = "<group>"; };
+		E4C001EC27A900EA0084377B /* wordCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = wordCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,9 +71,10 @@
 				E49F1FB3275D2CC8007D39D7 /* AppDelegate.swift */,
 				E49F1FB5275D2CC8007D39D7 /* SceneDelegate.swift */,
 				E49F1FB7275D2CC8007D39D7 /* ViewController.swift */,
+				E4C001EC27A900EA0084377B /* wordCell.swift */,
 				E49F200B275F2E9B007D39D7 /* addNewWordCell.swift */,
-				E49F200D275FC134007D39D7 /* testController.swift */,
 				E49F2011275FDA2B007D39D7 /* answerButton.swift */,
+				E49F200D275FC134007D39D7 /* testController.swift */,
 				E49F1FE9275E994C007D39D7 /* listsController.swift */,
 				E49F1FE7275E71D4007D39D7 /* globalData.swift */,
 				E49F1FB9275D2CC8007D39D7 /* Main.storyboard */,
@@ -154,6 +157,7 @@
 			files = (
 				E49F1FB8275D2CC8007D39D7 /* ViewController.swift in Sources */,
 				E49F1FB4275D2CC8007D39D7 /* AppDelegate.swift in Sources */,
+				E4C001ED27A900EA0084377B /* wordCell.swift in Sources */,
 				E49F2012275FDA2B007D39D7 /* answerButton.swift in Sources */,
 				E49F200E275FC134007D39D7 /* testController.swift in Sources */,
 				E49F200C275F2E9B007D39D7 /* addNewWordCell.swift in Sources */,

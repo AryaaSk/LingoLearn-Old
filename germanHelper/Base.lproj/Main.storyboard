@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="a1P-hU-gbd">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="a1P-hU-gbd">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,51 +17,68 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fey-Tp-QCZ">
-                                <rect key="frame" x="0.0" y="88" width="390" height="756"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="uWQ-SO-sFg">
+                                <rect key="frame" x="10" y="138" width="370" height="672"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="zig-2a-RaP">
-                                        <rect key="frame" x="0.0" y="44.666666030883789" width="390" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zig-2a-RaP" id="12b-RN-nx3">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="addNewWord" id="YUe-sd-yuB" customClass="addNewWordCell" customModule="germanHelper" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="88.333333969116211" width="390" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="YUe-sd-yuB" id="Aqs-oh-7eo">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bHc-X0-Le8">
+                                    <size key="itemSize" width="100" height="100"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="ii5-ck-uPi" customClass="wordCell" customModule="germanHelper" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="aVg-x5-Lhc">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Zr-0f-rON">
-                                                    <rect key="frame" x="174" y="11.333333333333336" width="42" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UEh-i6-Tz7" customClass="answerButton" customModule="germanHelper" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                    <connections>
+                                                        <action selector="buttonClicked:" destination="ii5-ck-uPi" eventType="touchUpInside" id="61i-Uk-hnC"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="4Zr-0f-rON" firstAttribute="centerY" secondItem="Aqs-oh-7eo" secondAttribute="centerY" id="lLh-qD-Bbf"/>
-                                                <constraint firstItem="4Zr-0f-rON" firstAttribute="centerX" secondItem="Aqs-oh-7eo" secondAttribute="centerX" id="w0o-r3-BPw"/>
+                                                <constraint firstAttribute="trailing" secondItem="UEh-i6-Tz7" secondAttribute="trailing" id="2Le-hk-qIg"/>
+                                                <constraint firstAttribute="bottom" secondItem="UEh-i6-Tz7" secondAttribute="bottom" id="64u-Ff-gfi"/>
+                                                <constraint firstItem="UEh-i6-Tz7" firstAttribute="leading" secondItem="aVg-x5-Lhc" secondAttribute="leading" id="L2p-AE-cjU"/>
+                                                <constraint firstItem="UEh-i6-Tz7" firstAttribute="top" secondItem="aVg-x5-Lhc" secondAttribute="top" id="wCl-QR-YGE"/>
                                             </constraints>
-                                        </tableViewCellContentView>
+                                        </collectionViewCellContentView>
+                                        <size key="customSize" width="128" height="128"/>
                                         <connections>
-                                            <outlet property="centerLabel" destination="4Zr-0f-rON" id="sxY-83-Llb"/>
+                                            <outlet property="wordButton" destination="UEh-i6-Tz7" id="cd9-nT-Jcx"/>
                                         </connections>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WrC-tY-GZf">
+                                <rect key="frame" x="0.0" y="88" width="390" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="HFg-ZE-Tkj"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Add Words"/>
+                                <connections>
+                                    <action selector="addWords:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dti-4j-g6V"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="fey-Tp-QCZ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="E0f-mF-MZh"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fey-Tp-QCZ" secondAttribute="trailing" id="id9-Iy-Rq6"/>
-                            <constraint firstItem="fey-Tp-QCZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="jsR-AX-VpF"/>
-                            <constraint firstAttribute="bottom" secondItem="fey-Tp-QCZ" secondAttribute="bottom" id="mdL-XJ-zN1"/>
+                            <constraint firstItem="uWQ-SO-sFg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="2RX-0z-WKL"/>
+                            <constraint firstItem="WrC-tY-GZf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="7gX-7F-9lF"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="uWQ-SO-sFg" secondAttribute="trailing" constant="10" id="8m2-DL-QiI"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="WrC-tY-GZf" secondAttribute="trailing" id="WT4-Ty-vgi"/>
+                            <constraint firstItem="uWQ-SO-sFg" firstAttribute="top" secondItem="WrC-tY-GZf" secondAttribute="bottom" id="WnI-PI-DpQ"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="uWQ-SO-sFg" secondAttribute="bottom" id="i9A-1Z-cX9"/>
+                            <constraint firstItem="WrC-tY-GZf" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="qOa-LW-Zg7"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Aoz-jv-TYa">
@@ -76,7 +94,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="tableView" destination="fey-Tp-QCZ" id="oro-40-Jzs"/>
+                        <outlet property="collectionView" destination="uWQ-SO-sFg" id="Boq-hr-FfD"/>
                         <segue destination="1qY-BZ-CGL" kind="show" identifier="lists" id="wmw-6o-FsV"/>
                         <segue destination="LIH-U0-sFP" kind="show" identifier="startTest" id="SF1-xE-Ki6"/>
                     </connections>
