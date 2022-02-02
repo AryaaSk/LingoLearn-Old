@@ -33,6 +33,7 @@ class listsController: UIViewController {
 			self.tableView.reloadData()
 			
 			currentList = germanLists.count - 1 //new list
+            saveToKey(data: String(currentList), key: "currentList")
 			NotificationCenter.default.post(Notification(name: Notification.Name("reloadView")))
 			self.dismiss(animated: true, completion: nil)
 		}))
@@ -56,27 +57,58 @@ extension listsController: UITableViewDelegate, UITableViewDataSource
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		currentList = indexPath.row
+        saveToKey(data: String(currentList), key: "currentList")
 		NotificationCenter.default.post(Notification(name: Notification.Name("reloadView")))
 		
 		self.dismiss(animated: true, completion: nil)
 	}
 	
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let renameAction = UIContextualAction(style: .normal, title: "Rename") { action, sourceView, completitionHandler in
+            //show rename alert
+            let renameAlert = UIAlertController(title: "Rename list: " + germanLists[indexPath.row].name, message: "", preferredStyle: .alert)
+            renameAlert.addTextField { textfield in
+                textfield.placeholder = "New List Name"
+            }
+            
+            renameAlert.addAction(UIAlertAction(title: "Rename", style: .default) { alert in
+                let textfield = renameAlert.textFields![0] as UITextField
+                let listText = textfield.text!
+                
+                //check if listText is ""
+                if listText == ""
+                {
+                    //show error alert
+                    let errorAlert = UIAlertController(title: "Unable to rename list", message: "Please enter a valid name", preferredStyle: .alert)
+                    errorAlert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                    self.present(errorAlert, animated: true, completion: nil)
+                }
+                
+                germanLists[indexPath.row].name = listText
+                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                tableView.reloadData()
+            })
+            renameAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            self.present(renameAlert, animated: true, completion: nil)
+        }
+        renameAction.backgroundColor = .link
+        
 		if germanLists.count != 1
         {
             let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { action, sourceView, completitionHandler in
                 germanLists.remove(at: indexPath.row) //always remove from array before removing from tableview with animation
                 if currentList != 0
-                { currentList -= 1 }
+                { currentList -= 1; saveToKey(data: String(currentList), key: "currentList") }
                 saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
                 tableView.deleteRows(at: [indexPath], with: .automatic)
             }
-            let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction])
+            let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction, renameAction])
 			return swipeConfig
 		}
 		else
 		{
-			return nil
+            let swipeConfig = UISwipeActionsConfiguration(actions: [renameAction])
+            return swipeConfig
 		}
 	}
 }

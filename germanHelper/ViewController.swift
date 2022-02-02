@@ -193,9 +193,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func addWords(_ sender: Any) {
-        let alertController = UIAlertController(title: "Add Words", message: "Type 1 or more words separated by a space or a comma", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Add Words", message: "Type 1 or more words separated by a space or a comma.\n\nYou can also scan words in by clicking on the textfield and selecting scan text.", preferredStyle: .alert)
         alertController.addTextField { textfield in
-            textfield.placeholder = "Word"
+            textfield.placeholder = "German Words"
         }
         
         alertController.addAction(UIAlertAction(title: "Add Word(s)", style: .default, handler: { alert in

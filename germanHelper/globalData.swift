@@ -17,7 +17,7 @@ struct germanObject: Codable
     let gender: String
 }
 struct germanList: Codable {
-	let name: String
+	var name: String
 	var words: [germanObject]
 }
 
@@ -71,7 +71,7 @@ func decodeToGermanWords(jsonString: String) -> [germanObject]
 
 var germanWords: [germanObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "germanWords") ?? "")
 var germanLists: [germanList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "germanLists") ?? "")
-var currentList: Int = 0
+var currentList: Int = Int(UserDefaults.standard.string(forKey: "currentList") ?? "0")!
 
 extension StringProtocol {
     subscript(_ offset: Int)                     -> Element     { self[index(startIndex, offsetBy: offset)] }
