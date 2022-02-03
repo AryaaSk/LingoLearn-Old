@@ -31,13 +31,14 @@ class ViewController: UIViewController {
         super.viewDidLayoutSubviews()
 
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        //layout.sectionInset = UIEdgeInsets(top: 20, left: 0, bottom: 10, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
         layout.itemSize = CGSize(width: 115, height: 115) //can also make this screenwidth/height / 3
         layout.minimumInteritemSpacing = 5
         layout.minimumLineSpacing = 10
         collectionView!.collectionViewLayout = layout
         
         //need to add  a bottom border to the addNewWords button
+        addWordButton.addBottomBorderWithColor(color: UIColor.init(red: 215/255, green: 215/255, blue: 215/255, alpha: 1), width: 0.5)
     }
 	
 	@objc func reloadView()
@@ -63,21 +64,21 @@ class ViewController: UIViewController {
 		}
 	}
 	
-	func search(text: String)
-	{
-		//when search button is clicked, add word to german words list and then add it to the current list separately
-		let germanWord = text
-		
+    func search(text: String)
+    {
+        //when search button is clicked, add word to german words list and then add it to the current list separately
+        let germanWord = text
+        
         germanLists[currentList].words.append(germanObject(original: "...", translation: "", german_sentence: "", english_translation: "", word_type: "", gender: ""))
-		self.collectionView.reloadData()
-		
-		//check if word is already in germanWords
-		var wordDownloaded = false
-		for word in germanWords
-		{
-			if word.original.lowercased() == germanWord.lowercased()
-			{ wordDownloaded = true }
-		}
+        self.collectionView.reloadData()
+        
+        //check if word is already in germanWords
+        var wordDownloaded = false
+        for word in germanWords
+        {
+            if word.original.lowercased() == germanWord.lowercased()
+            { wordDownloaded = true }
+        }
         //check if word is in list already
         for word in germanLists[currentList].words
         {
@@ -94,13 +95,14 @@ class ViewController: UIViewController {
                 return
             }
         }
-		
-		if wordDownloaded == false
-		{
-			let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?word=" + germanWord
+        
+        if wordDownloaded == false
+        {
+            //let urlString = "https://europe-west2-functions-hello-world-334109.cloudfunctions.net/functions-hello-world?word=" + germanWord (OLD API)
+            let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?word=" + germanWord
             
             if let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
-                let url = URL(string: encoded)
+               let url = URL(string: encoded)
             {
                 URLSession.shared.dataTask(with: url) { data, response, error in
                     if let jsonString = String(data: data!, encoding: .utf8)
@@ -108,13 +110,16 @@ class ViewController: UIViewController {
                         DispatchQueue.main.async {
                             let decoder = JSONDecoder()
                             do
-                                {
-                                    let jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
-                                    self.completion(jsonData: jsonData, alreadyContained: false)
-                                }
+                            {
+                                let jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
+                                
+                                self.completion(jsonData: jsonData, alreadyContained: false)
+                            }
                             catch
                             {
+                                print(jsonString)
                                 print(error)
+                                
                                 germanLists[currentList].words.removeLast() //remove the loading indicator
                                 self.multipleWords -= 1
                                 self.collectionView.reloadData()
@@ -130,33 +135,24 @@ class ViewController: UIViewController {
                     }
                 }.resume()
             }
-		}
-		else
-		{
-			for word in germanWords
-			{
-				if word.original.lowercased() == germanWord.lowercased()
-				{
+        }
+        else
+        {
+            for word in germanWords
+            {
+                if word.original.lowercased() == germanWord.lowercased()
+                {
                     completion(jsonData: word, alreadyContained: true)
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
     func completion(jsonData: germanObject, alreadyContained: Bool)
     {
         var jsonData = jsonData
         //capitalise the first letter of the original
         var original = jsonData.original.lowercased()
         original = original.capitalized
-        
-        //add der, die or das
-        if jsonData.gender == "Masculine"
-        { original = "der " + original }
-        if jsonData.gender == "Feminine"
-        { original = "die " + original }
-        if jsonData.gender == "Neuter"
-        { original = "das " + original }
-        
         jsonData.original = original
         
         if alreadyContained == false
@@ -255,7 +251,7 @@ class ViewController: UIViewController {
         if germanLists[currentList].words[selectedIndex].gender != "None"
         { alertMessage = alertMessage + "\n\nGender : " + germanLists[currentList].words[selectedIndex].gender }
         
-        let alert = UIAlertController(title: "Word: \(germanLists[currentList].words[selectedIndex].original)", message: alertMessage, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Word: \(addArticle(object: germanLists[currentList].words[selectedIndex]))", message: alertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
             germanLists[currentList].words.remove(at: selectedIndex) //always remove from array before removing from tableview with animation
             saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
@@ -276,9 +272,18 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! wordCell
-        cell.wordButton.setTitle(germanLists[currentList].words[indexPath.row].original, for: .normal)
+        cell.wordButton.setTitle(addArticle(object: germanLists[currentList].words[indexPath.row]), for: .normal)
         cell.tag = indexPath.row
         return cell
     }
 }
 
+
+extension UIView {
+    func addBottomBorderWithColor(color: UIColor, width: CGFloat) {
+        let border = CALayer()
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x: 0, y: self.frame.size.height - width, width: self.frame.size.width, height: width)
+        self.layer.addSublayer(border)
+    }
+}

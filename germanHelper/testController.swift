@@ -71,7 +71,7 @@ class testController: UIViewController {
             
             if randomNum == 0
             {
-                questions.append(questionObject(questionText: "What is the English translation of \(word.original)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglish"))
+                questions.append(questionObject(questionText: "What is the English translation of \(addArticle(object: word))", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglish"))
             }
             //English to German, 1 word
             else if randomNum == 1
@@ -124,10 +124,11 @@ class testController: UIViewController {
             }
             else if questions[currentQuestion].questionType == "EnglishToGerman" //answers in german
             {
-                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].original, for: .normal)
-                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].original, for: .normal)
-                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].original, for: .normal)
-                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].original, for: .normal)
+                
+                button1Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[0]]), for: .normal)
+                button2Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[1]]), for: .normal)
+                button3Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[2]]), for: .normal)
+                button4Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[3]]), for: .normal)
             }
             else if questions[currentQuestion].questionType == "GermanToEnglishSentence"
             {

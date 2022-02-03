@@ -21,6 +21,25 @@ struct germanList: Codable {
 	var words: [germanObject]
 }
 
+func addArticle(object: germanObject) -> String
+{
+    var original = object.original
+    //return the original but with an article if its a noun, I can just display this instead of the raw original
+    if object.word_type == "Noun"
+    {
+        //we know its a noun so we can just add the article
+        //add der, die or das
+        if object.gender == "Masculine"
+        { original = "der " + original }
+        if object.gender == "Feminine"
+        { original = "die " + original }
+        if object.gender == "Neuter"
+        { original = "das " + original }
+    }
+    
+    return original
+}
+
 extension JSONEncoder {
 	static func encode<T: Encodable>(from data: T) -> String? {
 		do {
