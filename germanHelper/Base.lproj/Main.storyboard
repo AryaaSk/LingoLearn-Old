@@ -68,17 +68,25 @@
                                     <action selector="addWords:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dti-4j-g6V"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hpv-fZ-356" customClass="EmptyScreen" customModule="germanHelper" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="139" width="390" height="705"/>
+                                <color key="backgroundColor" systemColor="systemRedColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="uWQ-SO-sFg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="2RX-0z-WKL"/>
+                            <constraint firstItem="hpv-fZ-356" firstAttribute="top" secondItem="WrC-tY-GZf" secondAttribute="bottom" constant="1" id="74T-JF-wUF"/>
                             <constraint firstItem="WrC-tY-GZf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="7gX-7F-9lF"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="uWQ-SO-sFg" secondAttribute="trailing" constant="10" id="8m2-DL-QiI"/>
+                            <constraint firstAttribute="bottom" secondItem="hpv-fZ-356" secondAttribute="bottom" id="On7-Sw-t1y"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="WrC-tY-GZf" secondAttribute="trailing" id="WT4-Ty-vgi"/>
                             <constraint firstItem="uWQ-SO-sFg" firstAttribute="top" secondItem="WrC-tY-GZf" secondAttribute="bottom" constant="1" id="WnI-PI-DpQ"/>
                             <constraint firstAttribute="bottom" secondItem="uWQ-SO-sFg" secondAttribute="bottom" id="i9A-1Z-cX9"/>
                             <constraint firstItem="WrC-tY-GZf" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="qOa-LW-Zg7"/>
+                            <constraint firstItem="hpv-fZ-356" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="xWl-jP-6mM"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="hpv-fZ-356" secondAttribute="trailing" id="yax-bd-hAa"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Aoz-jv-TYa">
@@ -96,13 +104,14 @@
                     <connections>
                         <outlet property="addWordButton" destination="WrC-tY-GZf" id="pMe-rW-bnt"/>
                         <outlet property="collectionView" destination="uWQ-SO-sFg" id="Boq-hr-FfD"/>
+                        <outlet property="emptyScreen" destination="hpv-fZ-356" id="Tle-Ej-ovH"/>
                         <segue destination="1qY-BZ-CGL" kind="show" identifier="lists" id="wmw-6o-FsV"/>
                         <segue destination="LIH-U0-sFP" kind="show" identifier="startTest" id="SF1-xE-Ki6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1041" y="117"/>
+            <point key="canvasLocation" x="1040" y="116.58767772511848"/>
         </scene>
         <!--Test Controller-->
         <scene sceneID="aMl-EJ-xS1">
@@ -283,6 +292,9 @@
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

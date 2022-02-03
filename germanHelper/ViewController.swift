@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var addWordButton: UIButton!
+    @IBOutlet var emptyScreen: EmptyScreen!
     override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -25,7 +26,22 @@ class ViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: Notification.Name("reloadView"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(clickedOnWord(notification:)), name: Notification.Name("clickedWord"), object: nil)
 		self.title = germanLists[currentList].name
+        
+        checkWords()
+        
+        emptyScreen.imageView.image = UIImage(systemName: "text.bubble")
+        emptyScreen.viewLabel.text = "You have not added any words, to get started click the Add Words button"
+        emptyScreen.isHidden = true
+        checkEmptyScreen()
 	}
+    
+    func checkEmptyScreen()
+    {
+        if germanLists[currentList].words.count == 0
+        { emptyScreen.isHidden = false }
+        else
+        { emptyScreen.isHidden = true }
+    }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -44,6 +60,7 @@ class ViewController: UIViewController {
 	@objc func reloadView()
 	{
         collectionView.reloadData()
+        checkEmptyScreen()
 		self.title = germanLists[currentList].name
 	}
 	
@@ -71,6 +88,7 @@ class ViewController: UIViewController {
         
         germanLists[currentList].words.append(germanObject(original: "...", translation: "", german_sentence: "", english_translation: "", word_type: "", gender: ""))
         self.collectionView.reloadData()
+        checkEmptyScreen()
         
         //check if word is already in germanWords
         var wordDownloaded = false
@@ -123,6 +141,7 @@ class ViewController: UIViewController {
                                 germanLists[currentList].words.removeLast() //remove the loading indicator
                                 self.multipleWords -= 1
                                 self.collectionView.reloadData()
+                                self.checkEmptyScreen()
                                 
                                 if self.clickedMultiWord == false
                                 {
@@ -186,6 +205,7 @@ class ViewController: UIViewController {
         saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
         
         collectionView.reloadData()
+        checkEmptyScreen()
     }
     
     @IBAction func addWords(_ sender: Any) {
@@ -256,6 +276,7 @@ class ViewController: UIViewController {
             germanLists[currentList].words.remove(at: selectedIndex) //always remove from array before removing from tableview with animation
             saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
             self.collectionView.reloadData()
+            self.checkEmptyScreen()
         }))
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)

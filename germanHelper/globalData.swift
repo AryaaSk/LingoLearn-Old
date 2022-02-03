@@ -39,6 +39,24 @@ func addArticle(object: germanObject) -> String
     
     return original
 }
+func checkWords()
+{
+    //checks all lists for ... as those are just loading indicators
+    var a = 0
+    while a != germanLists.count
+    {
+        //loop through and remove items with original == ...
+        var i = 0
+        while i != germanLists[a].words.count
+        {
+            if germanLists[a].words[i].original == "..."
+            { germanLists[a].words.remove(at: i) }
+            else
+            { i += 1 }
+        }
+        a += 1
+    }
+}
 
 extension JSONEncoder {
 	static func encode<T: Encodable>(from data: T) -> String? {

@@ -19,6 +19,8 @@ class testController: UIViewController {
 	var questions: [questionObject] = []
 	var currentQuestion = 0
 	var score = 0
+    
+    var alreadyAnswered = false
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +36,7 @@ class testController: UIViewController {
 	func prepareTest()
 	{
 		score = 0
+        alreadyAnswered = false
         
 		currentQuestion = 0
 		questions = []
@@ -94,6 +97,7 @@ class testController: UIViewController {
 	}
     func prepareQuestion()
 	{
+        alreadyAnswered = false
 		answerIndexList.shuffle()
         
         if currentQuestion >= questions.count //if the user spams a button it could lead to an out of range error
@@ -175,7 +179,7 @@ class testController: UIViewController {
             { button4Outlet.setTitleColor(.red, for: .normal) }
         }
         
-		if currentQuestion != questions.count - 1
+		if currentQuestion != questions.count - 1 && alreadyAnswered == false
 		{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.button1Outlet.reset()
@@ -206,16 +210,20 @@ class testController: UIViewController {
 	}
 	
 	@IBAction func button1(_ sender: Any) {
-		answerClicked(button: 0)
+        if alreadyAnswered == false
+        { answerClicked(button: 0); alreadyAnswered = true }
 	}
 	@IBAction func button2(_ sender: Any) {
-		answerClicked(button: 1)
+        if alreadyAnswered == false
+        { answerClicked(button: 1); alreadyAnswered = true }
 	}
 	@IBAction func button3(_ sender: Any) {
-		answerClicked(button: 2)
+        if alreadyAnswered == false
+        { answerClicked(button: 2); alreadyAnswered = true }
 	}
 	@IBAction func button4(_ sender: Any) {
-		answerClicked(button: 3)
+        if alreadyAnswered == false
+        { answerClicked(button: 3); alreadyAnswered = true }
 	}
 		
 	@IBAction func nextButton(_ sender: Any) {
