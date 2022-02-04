@@ -54,7 +54,26 @@ class ViewController: UIViewController {
         collectionView!.collectionViewLayout = layout
         
         //need to add  a bottom border to the addNewWords button
-        addWordButton.addBottomBorderWithColor(color: UIColor.init(red: 215/255, green: 215/255, blue: 215/255, alpha: 1), width: 0.5)
+        setColours()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if self.traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            setColours()
+        }
+    }
+    
+    func setColours()
+    {
+        if traitCollection.userInterfaceStyle == .dark {
+            //Dark
+            addWordButton.addBottomBorderWithColor(color: UIColor.init(red: 30/255, green: 30/255, blue: 30/255, alpha: 1), width: 0.5)
+        }
+        else {
+            //Light
+            addWordButton.addBottomBorderWithColor(color: UIColor.init(red: 215/255, green: 215/255, blue: 215/255, alpha: 1), width: 0.5)
+        }
     }
 	
 	@objc func reloadView()
