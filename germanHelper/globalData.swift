@@ -90,7 +90,7 @@ func decodeToGermanLists(jsonString: String) -> [germanList]
 	}
 	catch
 	{
-		return [germanList(name: "List 1", words: [])] //so there is always at least one list so the app doesn't crash
+		return [germanList(name: "New List", words: [])] //so there is always at least one list so the app doesn't crash
 	}
 }
 func decodeToGermanWords(jsonString: String) -> [germanObject]

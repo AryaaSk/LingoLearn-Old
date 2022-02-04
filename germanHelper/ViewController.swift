@@ -278,9 +278,10 @@ class ViewController: UIViewController {
                         {
                             struct returnObject: Decodable
                             {
-                                let words: [germanObject]
+                                var words: [germanObject]
                             }
                             let jsonData = try decoder.decode(returnObject.self, from: jsonString.data(using: .utf8)!)
+                            
                             //and now just add the data to german words and then the current list
                             germanWords.append(contentsOf: jsonData.words)
                             germanLists[currentList].words.append(contentsOf: jsonData.words)
@@ -291,7 +292,7 @@ class ViewController: UIViewController {
                             
                             //reload views
                             self.collectionView.reloadData()
-                            checkEmptyScreen()
+                            self.checkEmptyScreen()
                         }
                         catch
                         {
@@ -317,12 +318,14 @@ class ViewController: UIViewController {
             let textfield = alertController.textFields![0] as UITextField
             let text = textfield.text!
             
+            let removeItems = [",", ".", "/", "?", "!", "(", ")", "=", "[", "]", "&", ":", "`", "-", "_"]
+            
             var textList = Array(text) //filter out all the puncuation
             var i = 0
             while i != textList.count
             {
-                if textList[i] == "," || textList[i] == "."
-                { textList.remove(at: i) }
+                if removeItems.contains(String(textList[i]))
+                { textList[i] = " " }
                 else
                 { i += 1 }
             }
