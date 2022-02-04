@@ -73,6 +73,8 @@ extension JSONEncoder {
 		}
 	}
 }
+
+
 func saveToKey(data: String, key: String)
 {
 	UserDefaults.standard.set(data, forKey: key) //setObject

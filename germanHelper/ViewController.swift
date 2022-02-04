@@ -9,10 +9,6 @@ import UIKit
 
 class ViewController: UIViewController {
 	
-    var multipleWords = 0
-    var wordStorage: [germanObject] = []
-    var clickedMultiWord = false
-    
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var addWordButton: UIButton!
     @IBOutlet var emptyScreen: EmptyScreen!
@@ -99,7 +95,7 @@ class ViewController: UIViewController {
 			self.present(alert, animated: true, completion: nil)
 		}
 	}
-	
+	/*
     func search(text: String)
     {
         //when search button is clicked, add word to german words list and then add it to the current list separately
@@ -136,7 +132,7 @@ class ViewController: UIViewController {
         if wordDownloaded == false
         {
             //let urlString = "https://europe-west2-functions-hello-world-334109.cloudfunctions.net/functions-hello-world?word=" + germanWord (OLD API)
-            let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?word=" + germanWord
+            let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?word=" + germanWord //in the future I will need to change this to just submit one list and then get 1 list returned
             
             if let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
                let url = URL(string: encoded)
@@ -158,7 +154,6 @@ class ViewController: UIViewController {
                                 print(error)
                                 
                                 germanLists[currentList].words.removeLast() //remove the loading indicator
-                                self.multipleWords -= 1
                                 self.collectionView.reloadData()
                                 self.checkEmptyScreen()
                                 
@@ -226,6 +221,91 @@ class ViewController: UIViewController {
         collectionView.reloadData()
         checkEmptyScreen()
     }
+     */
+    
+    func searchWords(words: [String])
+    {
+        //check which words are already in germanWords
+        var alreadyHave: [germanObject] = []
+        var needToGet: [String] = []
+        
+        for word in words
+        {
+            var i = 0
+            var didAdd = false
+            while i != germanWords.count
+            {
+                if germanWords[i].original.lowercased() == word.lowercased()
+                {
+                    //since it already exists we add it to alreadyHave
+                    alreadyHave.append(germanWords[i])
+                    didAdd = true
+                }
+                i += 1
+            }
+            if didAdd == false
+            {
+                //didnt add so we just add it to need to get
+                needToGet.append(word)
+            }
+        }
+        
+        //once we have these we can just add the alreadyHave and get the other words in one api call
+        germanLists[currentList].words.append(contentsOf: alreadyHave)
+        collectionView.reloadData()
+        checkEmptyScreen()
+        
+        saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+        
+        if needToGet.count > 0 //check if there are even any words to get
+        {
+            var wordList = ""
+            for word in needToGet
+            { wordList = wordList + word + "_" }
+            wordList.removeLast()
+            
+            //now just call the api
+            let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?wordList=" + wordList
+            let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)
+            let url = URL(string: encoded!)
+            
+            URLSession.shared.dataTask(with: url!) { data, response, error in
+                if let jsonString = String(data: data!, encoding: .utf8)
+                {
+                    DispatchQueue.main.async {
+                        let decoder = JSONDecoder()
+                        do
+                        {
+                            struct returnObject: Decodable
+                            {
+                                let words: [germanObject]
+                            }
+                            let jsonData = try decoder.decode(returnObject.self, from: jsonString.data(using: .utf8)!)
+                            //and now just add the data to german words and then the current list
+                            germanWords.append(contentsOf: jsonData.words)
+                            germanLists[currentList].words.append(contentsOf: jsonData.words)
+                            
+                            //save data
+                            saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                            saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
+                            
+                            //reload views
+                            self.collectionView.reloadData()
+                            checkEmptyScreen()
+                        }
+                        catch
+                        {
+                            print(jsonString)
+                            print(error)
+                            
+                            self.collectionView.reloadData()
+                            self.checkEmptyScreen()
+                        }
+                    }
+                }
+            }.resume()
+        }
+    }
     
     @IBAction func addWords(_ sender: Any) {
         let alertController = UIAlertController(title: "Add Words", message: "Type 1 or more words separated by a space or a comma.\n\nYou can also scan words in by clicking on the textfield and selecting scan text.", preferredStyle: .alert)
@@ -234,7 +314,6 @@ class ViewController: UIViewController {
         }
         
         alertController.addAction(UIAlertAction(title: "Add Word(s)", style: .default, handler: { alert in
-            self.clickedMultiWord = true
             let textfield = alertController.textFields![0] as UITextField
             let text = textfield.text!
             
@@ -260,12 +339,7 @@ class ViewController: UIViewController {
             }
             
             //now we go through the list and search each word 1 by 1
-            self.wordStorage = []
-            self.multipleWords = wordList.count
-            for word in wordList
-            {
-                self.search(text: word)
-            }
+            self.searchWords(words: wordList)
             //need to filter out the ... in the main list since this feature is quite buggy now
             
         }))
