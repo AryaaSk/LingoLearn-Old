@@ -65,6 +65,8 @@ class testController: UIViewController {
                 }
             }
             
+            print("starting test")
+            
 			//for answers get some other random items from the testList
 			let answer1 = getRandomElement(list: testList, excluding: [word]+excludingWords)
 			let answer2 = getRandomElement(list: testList, excluding: [word, answer1]+excludingWords)
@@ -91,7 +93,6 @@ class testController: UIViewController {
             {
                 questions.append(questionObject(questionText: "Translate: \(word.english_translation)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "EnglishToGermanSentence"))
             }
-            
 		}
         prepareQuestion()
 	}
