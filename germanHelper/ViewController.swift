@@ -12,6 +12,9 @@ class ViewController: UIViewController {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var addWordButton: UIButton!
     @IBOutlet var emptyScreen: EmptyScreen!
+    
+    var isLoading = false
+    
     override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -29,6 +32,8 @@ class ViewController: UIViewController {
         emptyScreen.viewLabel.text = "You have not added any words, to get started click the Add Words button"
         emptyScreen.isHidden = true
         checkEmptyScreen()
+        
+        isLoading = false
 	}
     
     func checkEmptyScreen()
@@ -95,136 +100,13 @@ class ViewController: UIViewController {
 			self.present(alert, animated: true, completion: nil)
 		}
 	}
-	/*
-    func search(text: String)
-    {
-        //when search button is clicked, add word to german words list and then add it to the current list separately
-        let germanWord = text
-        
-        germanLists[currentList].words.append(germanObject(original: "...", translation: "", german_sentence: "", english_translation: "", word_type: "", gender: ""))
-        self.collectionView.reloadData()
-        checkEmptyScreen()
-        
-        //check if word is already in germanWords
-        var wordDownloaded = false
-        for word in germanWords
-        {
-            if word.original.lowercased() == germanWord.lowercased()
-            { wordDownloaded = true }
-        }
-        //check if word is in list already
-        for word in germanLists[currentList].words
-        {
-            if germanWord.lowercased() == word.original.lowercased()
-            {
-                //the word is already in the list
-                if clickedMultiWord == false
-                {
-                    let alert = UIAlertController(title: "Word already in list", message: "Cannot have duplicate words", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
-                germanLists[currentList].words.removeLast() //remove the loading indicator
-                return
-            }
-        }
-        
-        if wordDownloaded == false
-        {
-            //let urlString = "https://europe-west2-functions-hello-world-334109.cloudfunctions.net/functions-hello-world?word=" + germanWord (OLD API)
-            let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?word=" + germanWord //in the future I will need to change this to just submit one list and then get 1 list returned
-            
-            if let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
-               let url = URL(string: encoded)
-            {
-                URLSession.shared.dataTask(with: url) { data, response, error in
-                    if let jsonString = String(data: data!, encoding: .utf8)
-                    {
-                        DispatchQueue.main.async {
-                            let decoder = JSONDecoder()
-                            do
-                            {
-                                let jsonData = try decoder.decode(germanObject.self, from: jsonString.data(using: .utf8)!)
-                                
-                                self.completion(jsonData: jsonData, alreadyContained: false)
-                            }
-                            catch
-                            {
-                                print(jsonString)
-                                print(error)
-                                
-                                germanLists[currentList].words.removeLast() //remove the loading indicator
-                                self.collectionView.reloadData()
-                                self.checkEmptyScreen()
-                                
-                                if self.clickedMultiWord == false
-                                {
-                                    let alert = UIAlertController(title: "Invalid Word", message: "Please enter a valid word", preferredStyle: .alert)
-                                    alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-                                    self.present(alert, animated: true, completion: nil)
-                                }
-                            }
-                        }
-                    }
-                }.resume()
-            }
-        }
-        else
-        {
-            for word in germanWords
-            {
-                if word.original.lowercased() == germanWord.lowercased()
-                {
-                    completion(jsonData: word, alreadyContained: true)
-                }
-            }
-        }
-    }
-    func completion(jsonData: germanObject, alreadyContained: Bool)
-    {
-        var jsonData = jsonData
-        //capitalise the first letter of the original
-        var original = jsonData.original.lowercased()
-        original = original.capitalized
-        jsonData.original = original
-        
-        if alreadyContained == false
-        {
-            germanWords.append(jsonData)
-        }
-        
-        //find a ...
-        var i = 0
-        while i != germanLists[currentList].words.count
-        {
-            if germanLists[currentList].words[i].original == "..."
-            {
-                germanLists[currentList].words.remove(at: i)
-                //replace word
-                if i == germanLists[currentList].words.count
-                {
-                    germanLists[currentList].words.append(jsonData)
-                }
-                else
-                {
-                    germanLists[currentList].words.insert(jsonData, at: i)
-                }
-                break
-            }
-            else
-            { i += 1 }
-        }
-        
-        saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-        saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
-        
-        collectionView.reloadData()
-        checkEmptyScreen()
-    }
-     */
-    
+	
     func searchWords(words: [String])
     {
+        isLoading = true
+        collectionView.reloadData()
+        emptyScreen.isHidden = true //just hide the empty screen as there is guarnteed to be a loading cell
+        
         //check which words are already in germanWords
         var alreadyHave: [germanObject] = []
         var needToGet: [String] = []
@@ -252,9 +134,6 @@ class ViewController: UIViewController {
         
         //once we have these we can just add the alreadyHave and get the other words in one api call
         germanLists[currentList].words.append(contentsOf: alreadyHave)
-        collectionView.reloadData()
-        checkEmptyScreen()
-        
         saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
         
         if needToGet.count > 0 //check if there are even any words to get
@@ -291,6 +170,7 @@ class ViewController: UIViewController {
                             saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
                             
                             //reload views
+                            self.isLoading = false
                             self.collectionView.reloadData()
                             self.checkEmptyScreen()
                         }
@@ -299,12 +179,20 @@ class ViewController: UIViewController {
                             print(jsonString)
                             print(error)
                             
+                            self.isLoading = false
                             self.collectionView.reloadData()
                             self.checkEmptyScreen()
                         }
                     }
                 }
             }.resume()
+        }
+        else
+        {
+            //if there arent any words to get from api then we can just stop loading and reload the table view here
+            isLoading = false
+            collectionView.reloadData()
+            checkEmptyScreen()
         }
     }
     
@@ -332,18 +220,32 @@ class ViewController: UIViewController {
             
             var wordList = String(textList).components(separatedBy: [" "]).filter({!$0.isEmpty})
             //filter out the words like ein, eine, einen, der, die, das
+            let removeWords = ["ein", "eine", "einen", "der", "die", "das", "dem", "zu", "zur", "zum", "und", "am", "im", "um"]
+            
             i = 0
             while i != wordList.count
             {
-                if wordList[i].lowercased() == "ein" || wordList[i].lowercased() == "eine" || wordList[i].lowercased() == "einen" || wordList[i].lowercased() == "der" || wordList[i].lowercased() == "die" || wordList[i].lowercased() == "das"
+                //if wordList[i].lowercased() == "ein" || wordList[i].lowercased() == "eine" || wordList[i].lowercased() == "einen" || wordList[i].lowercased() == "der" || wordList[i].lowercased() == "die" || wordList[i].lowercased() == "das"
+                if removeWords.contains(wordList[i].lowercased())
                 { wordList.remove(at: i) }
                 else
                 { i += 1 }
             }
             
-            //now we go through the list and search each word 1 by 1
-            self.searchWords(words: wordList)
-            //need to filter out the ... in the main list since this feature is quite buggy now
+            wordList = Array(Set(wordList)) //removes duplicates
+            
+            //AZURE FUNCTION GETS BLOCKED AFTER 22 WORDS (FIRST TEST), TO STAY SAFE I WILL SET THE LIMIT AS 15 WORDS
+            //IF THE SERVER UNEXPECTANTLY CRASHES/BREAKS, JUST GO TO THE AZURE PORTAL AND RESTART THE FUNCTION APP
+            
+            //now checks if the wordList.count > 15, if it is then give an alert since it could get the azure function blocked
+            if wordList.count > 15
+            {
+                let alert = UIAlertController(title: "Too many words", message: "You can only add upto 15 words at one time\n\nThis is to prevent the server from crashing", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+            else
+            { self.searchWords(words: wordList) }
             
         }))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -384,13 +286,27 @@ class ViewController: UIViewController {
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource
 {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return germanLists[currentList].words.count
+        if isLoading == false
+        { return germanLists[currentList].words.count }
+        else
+        { return germanLists[currentList].words.count + 1 }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! wordCell
-        cell.wordButton.setTitle(addArticle(object: germanLists[currentList].words[indexPath.row]), for: .normal)
-        cell.tag = indexPath.row
+        
+        if indexPath.row == germanLists[currentList].words.count
+        {
+            //this is the loading cell since it's indexpath is at the end of the list
+            cell.wordButton.setTitle("Loading...", for: .normal)
+            cell.isUserInteractionEnabled = false
+        }
+        else
+        {
+            cell.wordButton.setTitle(addArticle(object: germanLists[currentList].words[indexPath.row]), for: .normal)
+            cell.tag = indexPath.row
+        }
+        
         return cell
     }
 }
