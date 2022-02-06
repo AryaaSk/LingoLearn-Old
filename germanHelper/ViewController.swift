@@ -240,7 +240,7 @@ class ViewController: UIViewController {
             //now checks if the wordList.count > 15, if it is then give an alert since it could get the azure function blocked
             if wordList.count > 15
             {
-                let alert = UIAlertController(title: "Too many words", message: "You can only add upto 15 words at one time\n\nThis is to prevent the server from crashing", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Too many words", message: "You can only add upto 15 words at one time", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
