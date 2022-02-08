@@ -305,6 +305,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource
         {
             cell.wordButton.setTitle(addArticle(object: germanLists[currentList].words[indexPath.row]), for: .normal)
             cell.tag = indexPath.row
+            cell.isUserInteractionEnabled = true
         }
         
         return cell
