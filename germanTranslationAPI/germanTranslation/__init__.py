@@ -1,7 +1,6 @@
 import logging
 from bs4 import BeautifulSoup
 import requests
-import json
 
 import azure.functions as func
 
@@ -17,6 +16,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     for item in wordList:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0', 'Content-type': 'text/plain; charset=utf-8'}
         url = "https://www.linguee.de/deutsch-englisch/uebersetzung/"
+        #can also use https://www.linguee.com
+
         r = requests.get(url+item+".html", headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
 
