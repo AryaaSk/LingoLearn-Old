@@ -35,11 +35,13 @@ def getWord(word):
 
     #decode this text to get the original, translation, german example sentence, english translation. word type and gender
     try:
+        logging.info("valid response")
         original = str(response[0]['text'])
     except:
+        logging.info("invalid response")
         return "" #we test the response call, if it doesnt even contain the original then we know its an invalid response and just return blank so it doesnt affect the returnJSON
 
-
+    
     translation = str(response[0]['translations'][0]['text'])
 
     #the sentences could not exist, so we make them blank if the api is unable to get them

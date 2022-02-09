@@ -238,7 +238,7 @@ class ViewController: UIViewController {
             //IF THE SERVER UNEXPECTANTLY CRASHES/BREAKS, JUST GO TO THE AZURE PORTAL AND RESTART THE FUNCTION APP
             
             //now checks if the wordList.count > 15, if it is then give an alert since it could get the azure function blocked
-            //15 word limit is still required due to the fact that the server will become overloaded if you try and put too many words at once
+            
             if wordList.count > 15
             {
                 let alert = UIAlertController(title: "Too many words", message: "You can only add upto 15 words at one time", preferredStyle: .alert)
