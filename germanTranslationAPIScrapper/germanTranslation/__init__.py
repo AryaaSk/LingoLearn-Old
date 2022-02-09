@@ -8,6 +8,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     #THIS API IS SPECIFICALLY FOR WHEN THE MAIN API FAILS AND THIS NEEDS TO GET THE WORDS DIRECTLY FROM THE WEBSITE
     #IF YOU USE THIS TOO MUCH IT CAN CAUSE THE AZURE FUNCTION'S IP ADDRESS TO BE BLOCKED AND BREAK THIS
 
+    #testing git
+
     #header should be in format "word1"_"word2"_"word3" (couldnt parse json)
 
     wordListString = req.params.get('wordList')
