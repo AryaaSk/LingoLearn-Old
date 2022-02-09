@@ -5,7 +5,7 @@ import requests
 import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    #THIS API IS SPECIFICALLY FOR TRANSLATING WORDS WITH SYMBOLS IN THEM, SUCH AS Äpfel
+    #THIS API IS SPECIFICALLY FOR TRANSLATING WORDS WITH SYMBOLS IN THEM, SUCH AS Äpfel (umlout)
 
     #header should be in format "word1"_"word2"_"word3" (couldnt parse json)
 
