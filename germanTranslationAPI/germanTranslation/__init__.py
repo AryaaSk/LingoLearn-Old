@@ -6,6 +6,7 @@ import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     #header should be in format word1_word2_word3 (couldnt parse json)
+    #here is github page for API: https://github.com/imankulov/linguee-api
     #here is the documentation for the API: https://linguee-api-v2.herokuapp.com/docs#/default/translations_api_v2_translations_get
 
     wordListString = req.params.get('wordList')
