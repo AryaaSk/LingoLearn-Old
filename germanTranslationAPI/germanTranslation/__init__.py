@@ -1,4 +1,5 @@
 import logging
+from sre_parse import CATEGORIES
 import requests
 import json
 
@@ -30,13 +31,15 @@ def getWord(word):
     url = "https://linguee-api-v2.herokuapp.com/api/v2/translations?query=" + word + "&src=de&dst=en&guess_direction=true"
     r = requests.get(url)
     text = r.text
-    if text == "[]":
-        return "" #this happens if the user returns an invalid word, we just return blank so it doesnt affect the return string
-
     response = json.loads(text)
 
     #decode this text to get the original, translation, german example sentence, english translation. word type and gender
-    original = str(response[0]['text'])
+    try:
+        original = str(response[0]['text'])
+    except:
+        return "" #we test the response call, if it doesnt even contain the original then we know its an invalid response and just return blank so it doesnt affect the returnJSON
+
+
     translation = str(response[0]['translations'][0]['text'])
 
     #the sentences could not exist, so we make them blank if the api is unable to get them
