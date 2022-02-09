@@ -1,11 +1,11 @@
 import logging
-from bs4 import BeautifulSoup
 import requests
+import json
 
 import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    #header should be in format "word1"_"word2"_"word3" (couldnt parse json)
+    #header should be in format word1_word2_word3 (couldnt parse json)
 
     wordListString = req.params.get('wordList')
     wordList = wordListString.split("_")
@@ -14,130 +14,56 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     #Changed the translation website to https://www.linguee.de/deutsch-englisch/uebersetzung/Brot.html, has better example sentences
 
     for item in wordList:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0', 'Content-type': 'text/plain; charset=utf-8'}
-        url = "https://www.linguee.de/deutsch-englisch/uebersetzung/"
-        #can also use https://www.linguee.com
+        translation = getWord(item) #just add the word with the function
+        words = words + translation
 
-        r = requests.get(url+item+".html", headers=headers)
-        soup = BeautifulSoup(r.content, "html.parser")
-
-        item = item[0].upper() + item[1: len(item)]
-
-        #GETTING THE TRANSLATION
-        text = str(soup.find(class_="dictLink featured"))
-        
-        #check if text is none, if it is then it means a wrongly spelt word was given
-        if text != "None":
-            mainWord = getMainContent(text)
-            #Now capitalise the first letter
-            mainWord = mainWord[0].upper() + mainWord[1: len(mainWord)]
-
-            #GETTING THE WORD TYPE
-            text = str(soup.find(class_="tag_wordtype"))
-            wordTypeList = getMainContent(text).split(",")
-            
-            if wordTypeList != ['']:
-                wordType = wordTypeList[0].lower()
-                if wordType == "substantiv": #adding the word types
-                    wordType = "noun"
-                elif wordType == "pronomen":
-                    wordType = "pronoun"
-                elif wordType == "verb":
-                    wordType = "verb"
-
-                wordType = wordType[0].upper() + wordType[1: len(wordType)] #capitalisation
-
-                gender = "None"
-                if len(wordTypeList) > 1:
-                    gender = wordTypeList[1][1:].lower()
-                    if gender == "maskulin":
-                        gender = "masculine"
-                    elif gender == "feminin":
-                        gender = "feminine"
-                    elif gender == "neutrum":
-                        gender = "neuter"
-                    elif gender == "plural":
-                        gender = "plural"
-                    gender = gender[0].upper() + gender[1: len(gender)] #capitalisation
-
-                #GETTING EXAMPLE SENTENCE
-                exampleLine = str(soup.find(class_="example line"))
-                exampleLineSoup = BeautifulSoup(exampleLine, "html.parser")
-
-                germanSentence = getMainContent(str(exampleLineSoup.find(class_="tag_s")))
-                englishSentence = getMainContent(str(exampleLineSoup.find(class_="tag_t")))
-                words = words + "{\"original\" : \"" + item + "\", \"translation\" : \"" + mainWord +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
-
-    if words[len(words) - 1] != "[":
+    if words[len(words) - 1] != "[": #just closing the bracket in the return json
         words = words[:-1]
     words = words + "]}"
 
     return words
+
+
+def getWord(word):
+    #using this api: https://linguee-api-v2.herokuapp.com/docs
+    #https://linguee-api-v2.herokuapp.com/api/v2/translations?query=[GERMAN_WORD]&src=de&dst=en&guess_direction=true
+    url = "https://linguee-api-v2.herokuapp.com/api/v2/translations?query=" + word + "&src=de&dst=en&guess_direction=true"
+    r = requests.get(url)
+    text = r.text
+    if text == "[]":
+        return "" #this happens if the user returns an invalid word, we just return blank so it doesnt affect the return string
+
+    response = json.loads(text)
+
+    #decode this text to get the original, translation, german example sentence, english translation. word type and gender
+    original = str(response[0]['text'])
+    translation = str(response[0]['translations'][0]['text'])
+
+    #the sentences could not exist, so we make them blank if the api is unable to get them
+    germanSentence = ""
+    englishSentence = ""
+    try:
+        germanSentence = str(response[0]['translations'][0]['examples'][0]['src'])
+        englishSentence = str(response[0]['translations'][0]['examples'][0]['dst'])
+    except:
+        germanSentence = ""
+        englishSentence = ""
+
+    #and finally we need the word type and gender
+    wordInfo = str(response[0]['pos']).split()
+    wordType = wordInfo[0]
+    gender = "" #gender is only available in nouns
+    try:
+        gender = wordInfo[1]
+    except:
+        gender = ""
+
+    #finally we capitalise everything
+    original = original.capitalize()
+    translation = translation.capitalize()
+    germanSentence = germanSentence.capitalize()
+    englishSentence = englishSentence.capitalize()
+    wordType = wordType.capitalize()
+    gender = gender.capitalize()
     
-    """
-    #OLD CODE:
-
-    word = req.params.get('word')
-    #Changed the translation website to https://www.linguee.de/deutsch-englisch/uebersetzung/Brot.html, has better example sentences
-
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0', 'Content-type': 'text/plain; charset=utf-8'}
-    url = "https://www.linguee.de/deutsch-englisch/uebersetzung/"
-    r = requests.get(url+word+".html", headers=headers)
-    soup = BeautifulSoup(r.content, "html.parser")
-
-    #GETTING THE TRANSLATION
-    text = str(soup.find(class_="dictLink featured"))
-
-    mainWord = getMainContent(text)
-    #Now capitalise the first letter
-    mainWord = mainWord[0].upper() + mainWord[1: len(mainWord)]
-
-    #GETTING THE WORD TYPE
-    text = str(soup.find(class_="tag_wordtype"))
-    wordTypeList = getMainContent(text).split(",")
-    
-    wordType = wordTypeList[0].lower()
-    if wordType == "substantiv": #adding the word types
-        wordType = "noun"
-    elif wordType == "pronomen":
-        wordType = "pronoun"
-    elif wordType == "verb":
-        wordType = "verb"
-    wordType = wordType[0].upper() + wordType[1: len(wordType)] #capitalisation
-
-    gender = "None"
-    if len(wordTypeList) > 1:
-        gender = wordTypeList[1][1:].lower()
-        if gender == "maskulin":
-            gender = "masculine"
-        elif gender == "feminin":
-            gender = "feminine"
-        elif gender == "neutrum":
-            gender = "neuter"
-        elif gender == "plural":
-            gender = "plural"
-        gender = gender[0].upper() + gender[1: len(gender)] #capitalisation
-
-    #GETTING EXAMPLE SENTENCE
-    exampleLine = str(soup.find(class_="example line"))
-    exampleLineSoup = BeautifulSoup(exampleLine, "html.parser")
-
-    germanSentence = getMainContent(str(exampleLineSoup.find(class_="tag_s")))
-    englishSentence = getMainContent(str(exampleLineSoup.find(class_="tag_t")))
-
-    return str({"original" : word, "translation" : mainWord, "german_sentence" : germanSentence, "english_translation": englishSentence, "word_type": wordType, "gender": gender})
-    """
-
-
-def getMainContent(text):
-    firstIndex = 0
-    secondIndex = 0
-    i = 0
-    while i != len(text):
-        if text[i] == ">":
-            firstIndex = i
-        if firstIndex != 0 and text[i] == "<":
-            secondIndex = i
-            break
-        i += 1
-    return text[firstIndex + 1: secondIndex]
+    return "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
