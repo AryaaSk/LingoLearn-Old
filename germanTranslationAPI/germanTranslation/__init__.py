@@ -35,12 +35,29 @@ def getWord(word):
 
     #decode this text to get the original, translation, german example sentence, english translation. word type and gender
     try:
-        logging.info("valid response")
         original = str(response[0]['text'])
     except:
-        logging.info("invalid response")
-        return "" #we test the response call, if it doesnt even contain the original then we know its an invalid response and just return blank so it doesnt affect the returnJSON
+        #we test the response call, if it doesnt even contain the original then we know its an invalid response
+        #we can try and call the scrapping api (germanTranslatorAPISymbols), since that gets the data directly from the website
+        scrappingURL = "https://aryaagermantranslatorapisymbols.azurewebsites.net/api/germantranslation?wordList=" + word
+        r = requests.get(scrappingURL)
+        response = json.loads(r.text) #parse this data
 
+        #now check if the words directory contains anything
+        if len(response['words']) != 0:
+            #we know that there is something, so just parse the data and return that
+            words = response['words']
+
+            original = words[0]['original']
+            translation = words[0]['translation']
+            germanSentence = words[0]['german_sentence']
+            englishSentence = words[0]['english_translation']
+            wordType = words[0]['word_type']
+            gender = words[0]['gender']
+
+            return "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
+        else:
+            return "" # and just return blank so it doesnt affect the returnJSON
     
     translation = str(response[0]['translations'][0]['text'])
 
