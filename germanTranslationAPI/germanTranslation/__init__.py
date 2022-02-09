@@ -1,5 +1,4 @@
 import logging
-from sre_parse import CATEGORIES
 import requests
 import json
 
@@ -24,40 +23,23 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     return words
 
-
 def getWord(word):
     #using this api: https://linguee-api-v2.herokuapp.com/docs
     #https://linguee-api-v2.herokuapp.com/api/v2/translations?query=[GERMAN_WORD]&src=de&dst=en&guess_direction=true
     url = "https://linguee-api-v2.herokuapp.com/api/v2/translations?query=" + word + "&src=de&dst=en&guess_direction=true"
     r = requests.get(url)
     text = r.text
-    response = json.loads(text)
+    if text == "Internal Server Error":
+        return "" #this means the user entered a word which doesnt exist in the APIs dictionary
 
+    response = json.loads(text)
     #decode this text to get the original, translation, german example sentence, english translation. word type and gender
     try:
         original = str(response[0]['text'])
     except:
         #we test the response call, if it doesnt even contain the original then we know its an invalid response
         #we can try and call the scrapping api (germanTranslatorAPIScrapper), since that gets the data directly from the website
-        scrappingURL = "https://aryaagermantranslatorapiscrapper.azurewebsites.net/api/germantranslation?wordList=" + word
-        r = requests.get(scrappingURL)
-        response = json.loads(r.text) #parse this data
-
-        #now check if the words directory contains anything
-        if len(response['words']) != 0:
-            #we know that there is something, so just parse the data and return that
-            words = response['words']
-
-            original = words[0]['original']
-            translation = words[0]['translation']
-            germanSentence = words[0]['german_sentence']
-            englishSentence = words[0]['english_translation']
-            wordType = words[0]['word_type']
-            gender = words[0]['gender']
-
-            return "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
-        else:
-            return "" # and just return blank so it doesnt affect the returnJSON
+        return callScrapperAPI(word)
     
     translation = str(response[0]['translations'][0]['text'])
 
@@ -89,3 +71,25 @@ def getWord(word):
     gender = gender.capitalize()
     
     return "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
+
+
+def callScrapperAPI(word):
+    scrappingURL = "https://aryaagermantranslatorapiscrapper.azurewebsites.net/api/germantranslation?wordList=" + word
+    r = requests.get(scrappingURL)
+    response = json.loads(r.text) #parse this data
+
+    #now check if the words directory contains anything
+    if len(response['words']) != 0:
+        #we know that there is something, so just parse the data and return that
+        words = response['words']
+
+        original = words[0]['original']
+        translation = words[0]['translation']
+        germanSentence = words[0]['german_sentence']
+        englishSentence = words[0]['english_translation']
+        wordType = words[0]['word_type']
+        gender = words[0]['gender']
+
+        return "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
+    else:
+        return "" # and just return blank so it doesnt affect the returnJSON
