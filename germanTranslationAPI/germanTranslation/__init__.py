@@ -59,6 +59,8 @@ def getWord(word):
     gender = "" #gender is only available in nouns
     try:
         gender = wordInfo[1]
+        #if there is a gender that means there will be a comma after the "noun" in wordType, so we need to remove that
+        wordType = wordType[:-1]
     except:
         gender = ""
 
