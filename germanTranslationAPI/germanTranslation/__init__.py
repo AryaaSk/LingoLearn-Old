@@ -38,8 +38,8 @@ def getWord(word):
         original = str(response[0]['text'])
     except:
         #we test the response call, if it doesnt even contain the original then we know its an invalid response
-        #we can try and call the scrapping api (germanTranslatorAPISymbols), since that gets the data directly from the website
-        scrappingURL = "https://aryaagermantranslatorapisymbols.azurewebsites.net/api/germantranslation?wordList=" + word
+        #we can try and call the scrapping api (germanTranslatorAPIScrapper), since that gets the data directly from the website
+        scrappingURL = "https://aryaagermantranslatorapiscrapper.azurewebsites.net/api/germantranslation?wordList=" + word
         r = requests.get(scrappingURL)
         response = json.loads(r.text) #parse this data
 
