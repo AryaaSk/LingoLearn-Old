@@ -75,7 +75,7 @@ def getWord(word):
     gender = gender.capitalize()
     
     data = "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
-    saveToFirebase(data[:-1], "data/GermanEnglish/" + original + "/") #the data[:-1] is to remove the comma which is added
+    saveToFirebase(data[:-1], "data/GermanEnglish/" + original.lower() + "/") #the data[:-1] is to remove the comma which is added
     return data
 
 
@@ -97,7 +97,7 @@ def callScrapperAPI(word):
         gender = words[0]['gender']
 
         data = "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
-        saveToFirebase(data[:-1], "data/GermanEnglish/" + original + "/")
+        saveToFirebase(data[:-1], "data/GermanEnglish/" + original.lower() + "/")
         return data
         
     else:
