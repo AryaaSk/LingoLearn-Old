@@ -1,4 +1,5 @@
 import logging
+import pyrebase
 import requests
 import json
 
@@ -73,7 +74,9 @@ def getWord(word):
     wordType = wordType.capitalize()
     gender = gender.capitalize()
     
-    return "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
+    data = "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
+    saveToFirebase(data[:-1], "data/GermanEnglish/" + original + "/") #the data[:-1] is to remove the comma which is added
+    return data
 
 
 def callScrapperAPI(word):
@@ -93,6 +96,22 @@ def callScrapperAPI(word):
         wordType = words[0]['word_type']
         gender = words[0]['gender']
 
-        return "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
+        data = "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
+        saveToFirebase(data[:-1], "data/GermanEnglish/" + original + "/")
+        return data
+        
     else:
         return "" # and just return blank so it doesnt affect the returnJSON
+
+def saveToFirebase(data, path):
+    app_name = "germanhelper-1804c"
+    config = {
+        "apiKey": "apiKey",
+        "authDomain": app_name + ".firebaseapp.com",
+        "databaseURL": "https://" + app_name + "-default-rtdb.europe-west1.firebasedatabase.app/",
+        "storageBucket": app_name + ".appspot.com"
+    }
+
+    firebase = pyrebase.initialize_app(config)
+    db = firebase.database()
+    db.child(path).set(data)
