@@ -58,13 +58,13 @@ def getWord(word):
     #and finally we need the word type and gender
     wordInfo = str(response[0]['pos']).split()
     wordType = wordInfo[0]
-    gender = "" #gender is only available in nouns
+    gender = "None" #gender is only available in nouns
     try:
         gender = wordInfo[1]
         #if there is a gender that means there will be a comma after the "noun" in wordType, so we need to remove that
         wordType = wordType[:-1]
     except:
-        gender = ""
+        gender = "None"
 
     #finally we capitalise everything
     original = original.capitalize()
