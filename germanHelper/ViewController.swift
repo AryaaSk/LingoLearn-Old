@@ -138,54 +138,65 @@ class ViewController: UIViewController {
         
         if needToGet.count > 0 //check if there are even any words to get
         {
+            /*
             var wordList = ""
             for word in needToGet
             { wordList = wordList + word + "_" }
             wordList.removeLast()
+            */
             
-            //now just call the api (uses linguee external API but if that fails it uses the old scrapper API)
-            let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?wordList=" + wordList
-            let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)
-            let url = URL(string: encoded!)
-            
-            URLSession.shared.dataTask(with: url!) { data, response, error in
-                if let jsonString = String(data: data!, encoding: .utf8)
-                {
-                    DispatchQueue.main.async {
-                        let decoder = JSONDecoder()
-                        do
-                        {
-                            struct returnObject: Decodable
+            for word in needToGet
+            {
+                //now just call the api (uses linguee external API but if that fails it uses the old scrapper API)
+                let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?wordList=" + word
+                let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)
+                let url = URL(string: encoded!)
+                
+                URLSession.shared.dataTask(with: url!) { data, response, error in
+                    if let jsonString = String(data: data!, encoding: .utf8)
+                    {
+                        DispatchQueue.main.async {
+                            let decoder = JSONDecoder()
+                            do
                             {
-                                var words: [germanObject]
+                                struct returnObject: Decodable
+                                {
+                                    var words: [germanObject]
+                                }
+                                let jsonData = try decoder.decode(returnObject.self, from: jsonString.data(using: .utf8)!)
+                                
+                                //and now just add the data to german words and then the current list
+                                germanWords.append(contentsOf: jsonData.words)
+                                germanLists[currentList].words.append(contentsOf: jsonData.words)
+                                
+                                //save data
+                                //saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                                //saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
+                                
+                                //reload views
+                                self.collectionView.reloadData()
+                                self.checkEmptyScreen()
+                                if word == needToGet.last //checking if it is the last element in the list, if so then end the loading
+                                {
+                                    self.isLoading = false
+                                }
                             }
-                            let jsonData = try decoder.decode(returnObject.self, from: jsonString.data(using: .utf8)!)
-                            
-                            //and now just add the data to german words and then the current list
-                            germanWords.append(contentsOf: jsonData.words)
-                            germanLists[currentList].words.append(contentsOf: jsonData.words)
-                            
-                            //save data
-                            saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-                            saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
-                            
-                            //reload views
-                            self.isLoading = false
-                            self.collectionView.reloadData()
-                            self.checkEmptyScreen()
-                        }
-                        catch
-                        {
-                            print(jsonString)
-                            print(error)
-                            
-                            self.isLoading = false
-                            self.collectionView.reloadData()
-                            self.checkEmptyScreen()
+                            catch
+                            {
+                                print(jsonString)
+                                print(error)
+                                
+                                self.collectionView.reloadData()
+                                self.checkEmptyScreen()
+                                if word == needToGet.last //checking if it is the last element in the list, if so then end the loading
+                                {
+                                    self.isLoading = false
+                                }
+                            }
                         }
                     }
-                }
-            }.resume()
+                }.resume()
+            }
         }
         else
         {
