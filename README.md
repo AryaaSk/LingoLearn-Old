@@ -13,7 +13,7 @@ After either of the 2 APIs has got the data, it uploads the data to a Firebase R
 
 When you call a word, the API first checks if the word already exists in firebase, if not then it calls the Linguee API, and if that doesn't work then it will use the scrapping API
 
-<u>App Documentation</u>
+<ins>App Documentation</ins>
 
 Here is a preview of the App:
 
