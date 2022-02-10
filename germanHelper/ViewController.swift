@@ -164,6 +164,7 @@ class ViewController: UIViewController {
                                     var words: [germanObject]
                                 }
                                 let jsonData = try decoder.decode(returnObject.self, from: jsonString.data(using: .utf8)!)
+                                print(jsonData)
                                 
                                 //and now just add the data to german words and then the current list
                                 germanWords.append(contentsOf: jsonData.words)

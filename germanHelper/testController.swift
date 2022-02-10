@@ -66,11 +66,10 @@ class testController: UIViewController {
             }
             
 			//for answers get some other random items from the testList
-			let answer1 = getRandomElement(list: testList, excluding: [word]+excludingWords)
+            let answer1 = getRandomElement(list: testList, excluding: [word]+excludingWords)
 			let answer2 = getRandomElement(list: testList, excluding: [word, answer1]+excludingWords)
-			let answer3 = getRandomElement(list: testList, excluding: [word, answer1, answer2]+excludingWords)
+			let answer3 = getRandomElement(list: testList, excluding: [word, answer1, answer2]+excludingWords)//there is some problem with this line (could be because the excluding words is the same length as the list)
             let correctAnswer = word
-            
             
             if randomNum == 0
             {
@@ -230,9 +229,16 @@ class testController: UIViewController {
 	
 	func getRandomElement(list: [germanObject], excluding: [germanObject]) -> germanObject
 	{
+        if list.count == excluding.count //check if the excluding is the same length as the list
+        {
+            //im not sure what happened but this seems to solve the issue, THIS IS PROBABLY ONLY A TEMPORARY FIX THOUGH
+            return list[0]
+        }
+        
+        //THIS ERROR IS CAUSED BY THE LIST BEING THE SAME AS THE EXCLUDING LIST SO THE checkElementContained function never returns false
 		var randomIndex = Int.random(in: 0...list.count-1)
-		while checkElementContained(list: excluding, element: list[randomIndex]) == true
-		{ randomIndex = Int.random(in: 0...list.count-1) }
+		while checkElementContained(list: excluding, element: list[randomIndex]) == true //the problem is in this loop
+        { randomIndex = Int.random(in: 0...list.count-1); } //this causes an infinite loop
 		return list[randomIndex]
 	}
 	func checkElementContained(list: [germanObject], element: germanObject) -> Bool
