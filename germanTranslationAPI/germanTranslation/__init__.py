@@ -16,7 +16,16 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     words = "{ \"words\" : [" #format of return
 
     for item in wordList:
-        translation = getWord(item) #just add the word with the function
+        translation = ""
+
+        translation = getFromFirebase(item) #first it checks firebase, then the API and finally it scraps it from the website if nothing else works
+
+        if translation == "":
+            translation = getWord(item)
+
+        if translation == "":
+            translation = callScrapperAPI(item)
+
         words = words + translation
 
     if words[len(words) - 1] != "[": #just closing the bracket in the return json
@@ -24,6 +33,26 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     words = words + "]}"
 
     return words
+
+def getFromFirebase(word):
+    app_name = "germanhelper-1804c"
+    config = {
+        "apiKey": "apiKey",
+        "authDomain": app_name + ".firebaseapp.com",
+        "databaseURL": "https://" + app_name + "-default-rtdb.europe-west1.firebasedatabase.app/",
+        "storageBucket": app_name + ".appspot.com"
+    }
+    firebase = pyrebase.initialize_app(config)
+    db = firebase.database()
+
+    word = word.lower() #the api always saves the keys (originals) as lowercase
+    
+    data = db.child("data/GermanEnglish/" + word).get() #this is how you get the data, it works with special characters as well
+    if data.pyres == None:
+        return ""
+    return str(data.pyres) + "," #directly adding back the comma so i dont have to add it later on
+
+
 
 def getWord(word):
     #using this api: https://linguee-api-v2.herokuapp.com/docs
@@ -41,7 +70,7 @@ def getWord(word):
     except:
         #we test the response call, if it doesnt even contain the original then we know its an invalid response
         #we can try and call the scrapping api (germanTranslatorAPIScrapper), since that gets the data directly from the website
-        return callScrapperAPI(word)
+        return ""
     
     translation = str(response[0]['translations'][0]['text'])
 
@@ -64,6 +93,10 @@ def getWord(word):
         #if there is a gender that means there will be a comma after the "noun" in wordType, so we need to remove that
         wordType = wordType[:-1]
     except:
+        gender = "None"
+    
+    #sometimes the API returns 2 wordTypes such as adjective / past participle, this causes the gender to become "/", so lets fix that
+    if gender == "/":
         gender = "None"
 
     #finally we capitalise everything
