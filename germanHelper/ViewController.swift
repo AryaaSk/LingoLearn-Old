@@ -170,8 +170,8 @@ class ViewController: UIViewController {
                                 germanLists[currentList].words.append(contentsOf: jsonData.words)
                                 
                                 //save data
-                                //saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-                                //saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
+                                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                                saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
                                 
                                 //reload views
                                 self.collectionView.reloadData()
