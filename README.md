@@ -2,7 +2,7 @@
 
 ## An App which lets you add german words and converts them to english, gives you example sentences in both languages and tests you
 
-<u>API Documentation</u>
+<ins>API Documentation</ins>
 
 There are 2 APIs, the main one which is called by the app, and then a scrapper API.
 The main API uses a 3rd Party Linguee API: https://github.com/imankulov/linguee-api, this is a bit unreliable as if you use it too quickly, it will start returning Error Code 503, which means the server was not able to process the request.
