@@ -11,5 +11,6 @@ After either of the 2 APIs has got the data, it uploads the data to a Firebase R
 
 When you call a word, the API first checks if the word already exists in firebase, if not then it calls the Linguee API, and if that doesn't work then it will use the scrapping API
 
-**Here is a preview of the App**
+Here is a preview of the App:
+
 ![Preview Image](https://github.com/AryaaSk/germanHelper/blob/main/5.5%20Photos/Simulator%20Screen%20Shot%20-%20iPhone%208%20Plus%20-%202022-02-02%20at%2017.31.35.png)
