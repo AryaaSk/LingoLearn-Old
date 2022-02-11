@@ -5,6 +5,7 @@
 <ins>API Documentation</ins>
 
 There are 2 APIs, the main one which is called by the app, and then a scrapper API.
+
 The main API uses a 3rd Party Linguee API: https://github.com/imankulov/linguee-api, this is a bit unreliable as if you use it too quickly, it will start returning Error Code 503, which means the server was not able to process the request.
 
 The scrapper API goes to the webpage: https://www.linguee.de/deutsch-englisch/uebersetzung/[GermanWord].html, and gets the data directly from the website. This is only to be used as a last resort as if you use it too much Linguee will block the Azure Function's IP Address and you have to manually restart the function app.
