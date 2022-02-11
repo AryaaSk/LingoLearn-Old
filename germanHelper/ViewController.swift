@@ -145,6 +145,8 @@ class ViewController: UIViewController {
             wordList.removeLast()
             */
             
+            var wordCount = needToGet.count //when this reaches 0 we set loading to 0
+            
             for word in needToGet
             {
                 //now just call the api (uses linguee external API but if that fails it uses the old scrapper API)
@@ -177,7 +179,8 @@ class ViewController: UIViewController {
                                 //reload views
                                 self.collectionView.reloadData()
                                 self.checkEmptyScreen()
-                                if word == needToGet.last //checking if it is the last element in the list, if so then end the loading
+                                wordCount -= 1
+                                if wordCount == 0 //checking if all words have been loaded, if so then we end the loading
                                 {
                                     self.isLoading = false
                                 }
@@ -189,7 +192,8 @@ class ViewController: UIViewController {
                                 
                                 self.collectionView.reloadData()
                                 self.checkEmptyScreen()
-                                if word == needToGet.last //checking if it is the last element in the list, if so then end the loading
+                                wordCount -= 1
+                                if wordCount == 0
                                 {
                                     self.isLoading = false
                                 }
