@@ -274,8 +274,8 @@ class ViewController: UIViewController {
         let tag = notification.userInfo!["tag"] as! Int
         let selectedIndex = tag
         
-        var germanSentence = germanLists[currentList].words[selectedIndex].german_sentence
-        var englishSentence = germanLists[currentList].words[selectedIndex].english_translation
+        var germanSentence = germanLists[currentList].words[selectedIndex].sentence
+        var englishSentence = germanLists[currentList].words[selectedIndex].sentence_translation
         
         if germanSentence == ""
         { germanSentence = "Unavailable" }

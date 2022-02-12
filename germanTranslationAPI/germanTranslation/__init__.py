@@ -13,6 +13,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     language = req.params.get('language')
     if language == None:
         language = "German" #always keep it capital
+    language = language.capitalize()
 
     wordListString = req.params.get('wordList')
     wordList = wordListString.split("_")

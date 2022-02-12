@@ -47,7 +47,7 @@ class testController: UIViewController {
 		{
             //Now we decide the question type, IF USING SENTENCES MUST CHECK IF THERE IS A SENTENCE AVAILABLE FOR THE WORD, SOME DON'T HAVE THEM
             var randomNum = 0
-            if word.german_sentence != "" && word.english_translation != ""
+            if word.sentence != "" && word.sentence_translation != ""
             { randomNum = Int.random(in: 0...3) }
             else //only 1 word questions
             { randomNum = Int.random(in: 0...1) }
@@ -58,7 +58,7 @@ class testController: UIViewController {
             {
                 for item in testList
                 {
-                    if item.german_sentence == "" || item.english_translation == ""
+                    if item.sentence == "" || item.sentence_translation == ""
                     {
                         excludingWords.append(item)
                     }
@@ -83,12 +83,12 @@ class testController: UIViewController {
             //German to English, Sentence
             else if randomNum == 2
             {
-                questions.append(questionObject(questionText: "Translate: \(word.german_sentence)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglishSentence"))
+                questions.append(questionObject(questionText: "Translate: \(word.sentence)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglishSentence"))
             }
             //English to German, Sentence
             else if randomNum == 3
             {
-                questions.append(questionObject(questionText: "Translate: \(word.english_translation)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "EnglishToGermanSentence"))
+                questions.append(questionObject(questionText: "Translate: \(word.sentence_translation)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "EnglishToGermanSentence"))
             }
 		}
         prepareQuestion()
@@ -134,17 +134,17 @@ class testController: UIViewController {
             }
             else if questions[currentQuestion].questionType == "GermanToEnglishSentence"
             {
-                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].english_translation, for: .normal)
-                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].english_translation, for: .normal)
-                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].english_translation, for: .normal)
-                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].english_translation, for: .normal)
+                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].sentence_translation, for: .normal)
+                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].sentence_translation, for: .normal)
+                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].sentence_translation, for: .normal)
+                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].sentence_translation, for: .normal)
             }
             else if questions[currentQuestion].questionType == "EnglishToGermanSentence"
             {
-                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].german_sentence, for: .normal)
-                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].german_sentence, for: .normal)
-                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].german_sentence, for: .normal)
-                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].german_sentence, for: .normal)
+                button1Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[0]].sentence, for: .normal)
+                button2Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[1]].sentence, for: .normal)
+                button3Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[2]].sentence, for: .normal)
+                button4Outlet.setTitle(questions[currentQuestion].answers[answerIndexList[3]].sentence, for: .normal)
             }
         }
         

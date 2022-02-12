@@ -7,14 +7,23 @@
 
 import Foundation
 
+enum language
+{
+    case german
+}
+
 struct languageObject: Codable
 {
 	var original: String
 	let translation: String
-	let german_sentence: String
-	let english_translation: String
+	let sentence: String
+	let sentence_translation: String
     let word_type: String
     let gender: String
+    
+    private enum CodingKeys : String, CodingKey {
+        case original, translation, sentence = "german_sentence", sentence_translation = "english_translation", word_type, gender
+    }
 }
 struct languageList: Codable {
 	var name: String
