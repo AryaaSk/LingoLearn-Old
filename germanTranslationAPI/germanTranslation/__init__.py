@@ -126,7 +126,7 @@ def getWord(word, language):
 
 
 def callScrapperAPI(word, language):
-    scrappingURL = "https://aryaagermantranslatorapiscrapper.azurewebsites.net/api/germantranslation?wordList=" + word
+    scrappingURL = "https://aryaagermantranslatorapiscrapper.azurewebsites.net/api/germantranslation?wordList=" + word + "&language=" + language
     r = requests.get(scrappingURL)
     response = json.loads(r.text) #parse this data
 
