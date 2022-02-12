@@ -1,6 +1,7 @@
-# German Helper
+# Language Helper
+This app used to just be for german words, but I expanded it to include French and Spanish as well, however a lot of the components are still named german... because of this
 
-## An App which lets you add german words and converts them to english, gives you example sentences in both languages and tests you
+## An App which lets you add language vocabulary words and converts them to english, gives you example sentences in both languages and tests you
 
 <ins>API Documentation</ins>
 
