@@ -28,7 +28,7 @@ class listsController: UIViewController {
 		}
 		alertController.addAction(UIAlertAction(title: "Create", style: .default, handler: { alert in
 			let textfield = alertController.textFields![0] as UITextField
-			germanLists.append(germanList(name: textfield.text!, words: []))
+			germanLists.append(languageList(name: textfield.text!, words: []))
 			saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
 			self.tableView.reloadData()
 			

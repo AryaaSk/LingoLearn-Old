@@ -108,7 +108,7 @@ class ViewController: UIViewController {
         emptyScreen.isHidden = true //just hide the empty screen as there is guarnteed to be a loading cell
         
         //check which words are already in germanWords
-        var alreadyHave: [germanObject] = []
+        var alreadyHave: [languageObject] = []
         var needToGet: [String] = []
         
         for word in words
@@ -163,7 +163,7 @@ class ViewController: UIViewController {
                             {
                                 struct returnObject: Decodable
                                 {
-                                    var words: [germanObject]
+                                    var words: [languageObject]
                                 }
                                 let jsonData = try decoder.decode(returnObject.self, from: jsonString.data(using: .utf8)!)
                                 print(jsonData)

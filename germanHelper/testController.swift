@@ -41,7 +41,7 @@ class testController: UIViewController {
 		currentQuestion = 0
 		questions = []
 		//put words into a random order
-		let testList: [germanObject] = germanLists[currentList].words.shuffled()
+		let testList: [languageObject] = germanLists[currentList].words.shuffled()
 		
 		for word in testList
 		{
@@ -53,7 +53,7 @@ class testController: UIViewController {
             { randomNum = Int.random(in: 0...1) }
             //German to English, 1 word
             
-            var excludingWords: [germanObject] = []
+            var excludingWords: [languageObject] = []
             if randomNum == 2 || randomNum == 3 //need to exclude the sentences if there isnt any available
             {
                 for item in testList
@@ -202,8 +202,8 @@ class testController: UIViewController {
 	struct questionObject
 	{
 		let questionText: String
-		let answers: [germanObject]
-		let correctAnswer: germanObject
+		let answers: [languageObject]
+		let correctAnswer: languageObject
         let questionType: String
 	}
 	
@@ -227,7 +227,7 @@ class testController: UIViewController {
 	@IBAction func nextButton(_ sender: Any) {
 	}
 	
-	func getRandomElement(list: [germanObject], excluding: [germanObject]) -> germanObject
+	func getRandomElement(list: [languageObject], excluding: [languageObject]) -> languageObject
 	{
         if list.count == excluding.count //check if the excluding is the same length as the list
         {
@@ -241,7 +241,7 @@ class testController: UIViewController {
         { randomIndex = Int.random(in: 0...list.count-1); } //this causes an infinite loop
 		return list[randomIndex]
 	}
-	func checkElementContained(list: [germanObject], element: germanObject) -> Bool
+	func checkElementContained(list: [languageObject], element: languageObject) -> Bool
 	{
 		for item in list
 		{

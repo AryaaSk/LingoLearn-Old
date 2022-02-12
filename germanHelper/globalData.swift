@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct germanObject: Codable
+struct languageObject: Codable
 {
 	var original: String
 	let translation: String
@@ -16,12 +16,12 @@ struct germanObject: Codable
     let word_type: String
     let gender: String
 }
-struct germanList: Codable {
+struct languageList: Codable {
 	var name: String
-	var words: [germanObject]
+	var words: [languageObject]
 }
 
-func addArticle(object: germanObject) -> String
+func addArticle(object: languageObject) -> String
 {
     var original = object.original
     //return the original but with an article if its a noun, I can just display this instead of the raw original
@@ -80,25 +80,25 @@ func saveToKey(data: String, key: String)
 	UserDefaults.standard.set(data, forKey: key) //setObject
 }
 
-func decodeToGermanLists(jsonString: String) -> [germanList]
+func decodeToGermanLists(jsonString: String) -> [languageList]
 {
 	let decoder = JSONDecoder()
 	do
 	{
-		let returnData = try decoder.decode([germanList].self, from: jsonString.data(using: .utf8)!)
+		let returnData = try decoder.decode([languageList].self, from: jsonString.data(using: .utf8)!)
 		return returnData
 	}
 	catch
 	{
-		return [germanList(name: "New List", words: [])] //so there is always at least one list so the app doesn't crash
+		return [languageList(name: "New List", words: [])] //so there is always at least one list so the app doesn't crash
 	}
 }
-func decodeToGermanWords(jsonString: String) -> [germanObject]
+func decodeToGermanWords(jsonString: String) -> [languageObject]
 {
 	let decoder = JSONDecoder()
 	do
 	{
-		let returnData = try decoder.decode([germanObject].self, from: jsonString.data(using: .utf8)!)
+		let returnData = try decoder.decode([languageObject].self, from: jsonString.data(using: .utf8)!)
 		return returnData
 	}
 	catch
@@ -108,8 +108,8 @@ func decodeToGermanWords(jsonString: String) -> [germanObject]
 	
 }
 
-var germanWords: [germanObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "germanWords") ?? "")
-var germanLists: [germanList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "germanLists") ?? "")
+var germanWords: [languageObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "germanWords") ?? "")
+var germanLists: [languageList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "germanLists") ?? "")
 var currentList: Int = Int(UserDefaults.standard.string(forKey: "currentList") ?? "0")!
 
 extension StringProtocol {

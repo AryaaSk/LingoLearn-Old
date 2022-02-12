@@ -10,6 +10,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     #here is github page for API: https://github.com/imankulov/linguee-api
     #here is the documentation for the API: https://linguee-api-v2.herokuapp.com/docs#/default/translations_api_v2_translations_get
 
+    language = req.params.get('language')
+    if language == None:
+        language = "German" #always keep it capital
+
     wordListString = req.params.get('wordList')
     wordList = wordListString.split("_")
 
@@ -18,13 +22,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     for item in wordList:
         translation = ""
 
-        translation = getFromFirebase(item) #first it checks firebase, then the API and finally it scraps it from the website if nothing else works
+        translation = getFromFirebase(item, language) #first it checks firebase, then the API and finally it scraps it from the website if nothing else works
 
         if translation == "":
-            translation = getWord(item)
+            translation = getWord(item, language)
 
         if translation == "":
-            translation = callScrapperAPI(item)
+            translation = callScrapperAPI(item, language)
 
         words = words + translation
 
@@ -34,7 +38,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     return words
 
-def getFromFirebase(word):
+def getFromFirebase(word, language):
     app_name = "germanhelper-1804c"
     config = {
         "apiKey": "apiKey",
@@ -47,17 +51,26 @@ def getFromFirebase(word):
 
     word = word.lower() #the api always saves the keys (originals) as lowercase
     
-    data = db.child("data/GermanEnglish/" + word).get() #this is how you get the data, it works with special characters as well
+    data = db.child("data/" + language + "English/" + word).get() #this is how you get the data, it works with special characters as well
     if data.pyres == None:
         return ""
     return str(data.pyres) + "," #directly adding back the comma so i dont have to add it later on
 
 
 
-def getWord(word):
+def getWord(word, language):
     #using this api: https://linguee-api-v2.herokuapp.com/docs
     #https://linguee-api-v2.herokuapp.com/api/v2/translations?query=[GERMAN_WORD]&src=de&dst=en&guess_direction=true
-    url = "https://linguee-api-v2.herokuapp.com/api/v2/translations?query=" + word + "&src=de&dst=en&guess_direction=true"
+    #need to convert the language to the language query
+    languageQuery = ""
+    if language == "German":
+        languageQuery = "de"
+    elif language == "French":
+        languageQuery = "fr"
+    elif language == "Spanish":
+        languageQuery = "es"
+
+    url = "https://linguee-api-v2.herokuapp.com/api/v2/translations?query=" + word + "&src=" + languageQuery+ "&dst=en&guess_direction=true"
     r = requests.get(url)
     text = r.text
     if text == "Internal Server Error":
@@ -108,11 +121,11 @@ def getWord(word):
     gender = gender.capitalize()
     
     data = "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
-    saveToFirebase(data[:-1], "data/GermanEnglish/" + original.lower() + "/") #the data[:-1] is to remove the comma which is added
+    saveToFirebase(data[:-1], language, original.lower())
     return data
 
 
-def callScrapperAPI(word):
+def callScrapperAPI(word, language):
     scrappingURL = "https://aryaagermantranslatorapiscrapper.azurewebsites.net/api/germantranslation?wordList=" + word
     r = requests.get(scrappingURL)
     response = json.loads(r.text) #parse this data
@@ -130,13 +143,13 @@ def callScrapperAPI(word):
         gender = words[0]['gender']
 
         data = "{\"original\" : \"" + original + "\", \"translation\" : \"" + translation +"\", \"german_sentence\" : \"" +  germanSentence + "\", \"english_translation\": \"" + englishSentence + "\", \"word_type\": \"" + wordType + "\", \"gender\": \"" + gender + "\"},"
-        saveToFirebase(data[:-1], "data/GermanEnglish/" + original.lower() + "/")
+        saveToFirebase(data[:-1], language, original.lower())
         return data
         
     else:
         return "" # and just return blank so it doesnt affect the returnJSON
 
-def saveToFirebase(data, path):
+def saveToFirebase(data, language, word):
     app_name = "germanhelper-1804c"
     config = {
         "apiKey": "apiKey",
@@ -147,4 +160,4 @@ def saveToFirebase(data, path):
 
     firebase = pyrebase.initialize_app(config)
     db = firebase.database()
-    db.child(path).set(data)
+    db.child("data/" + language + "English/" + word).set(data)

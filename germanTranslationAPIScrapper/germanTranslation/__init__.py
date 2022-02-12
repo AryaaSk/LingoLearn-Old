@@ -12,6 +12,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     #header should be in format "word1"_"word2"_"word3" (couldnt parse json)
 
+    language = req.params.get('language')
+    if language == None:
+        language = "German" #always capitalised
+
     wordListString = req.params.get('wordList')
     wordList = wordListString.split("_")
 
@@ -20,7 +24,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     for item in wordList:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0', 'Content-type': 'text/plain; charset=utf-8'}
-        url = "https://www.linguee.com/german-english/translation/"
+        url = "https://www.linguee.com/" + language.lower() + "-english/translation/"
         url = url+item+".html"
         #can also use https://www.linguee.de (but then will have to translate)
 
