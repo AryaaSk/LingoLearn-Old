@@ -69,14 +69,14 @@ func checkWords()
 {
     //checks all lists for ... as those are just loading indicators
     var a = 0
-    while a != germanLists.count
+    while a != languageLists.count
     {
         //loop through and remove items with original == ...
         var i = 0
-        while i != germanLists[a].words.count
+        while i != languageLists[a].words.count
         {
-            if germanLists[a].words[i].original == "..."
-            { germanLists[a].words.remove(at: i) }
+            if languageLists[a].words[i].original == "..."
+            { languageLists[a].words.remove(at: i) }
             else
             { i += 1 }
         }
@@ -137,8 +137,8 @@ func decodeToGermanWords(jsonString: String) -> [languageObject]
 	
 }
 
-var germanWords: [languageObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "languageWords") ?? "")
-var germanLists: [languageList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "languageLists") ?? "")
+var languageWords: [languageObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "languageWords") ?? "")
+var languageLists: [languageList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "languageLists") ?? "")
 var currentList: Int = Int(UserDefaults.standard.string(forKey: "currentList") ?? "0")!
 
 extension StringProtocol {

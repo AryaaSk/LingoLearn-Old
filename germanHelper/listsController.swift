@@ -36,11 +36,11 @@ class listsController: UIViewController {
             if language == "german" || language == "french" || language == "spanish"
             {
                 let textfield = alertController.textFields![0] as UITextField
-                germanLists.append(languageList(name: textfield.text!, language: language, words: []))
-                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
+                languageLists.append(languageList(name: textfield.text!, language: language, words: []))
+                saveToKey(data: JSONEncoder.encode(from: languageLists)!, key: "languageLists")
                 self.tableView.reloadData()
                 
-                currentList = germanLists.count - 1 //new list
+                currentList = languageLists.count - 1 //new list
                 saveToKey(data: String(currentList), key: "currentList")
                 NotificationCenter.default.post(Notification(name: Notification.Name("reloadView")))
                 self.dismiss(animated: true, completion: nil)
@@ -62,12 +62,12 @@ class listsController: UIViewController {
 extension listsController: UITableViewDelegate, UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return germanLists.count
+		return languageLists.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-		cell.textLabel?.text = germanLists[indexPath.row].name
+		cell.textLabel?.text = languageLists[indexPath.row].name
 		return cell
 	}
 	
@@ -82,7 +82,7 @@ extension listsController: UITableViewDelegate, UITableViewDataSource
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let renameAction = UIContextualAction(style: .normal, title: "Rename") { action, sourceView, completitionHandler in
             //show rename alert
-            let renameAlert = UIAlertController(title: "Rename list: " + germanLists[indexPath.row].name, message: "", preferredStyle: .alert)
+            let renameAlert = UIAlertController(title: "Rename list: " + languageLists[indexPath.row].name, message: "", preferredStyle: .alert)
             renameAlert.addTextField { textfield in
                 textfield.placeholder = "New List Name"
             }
@@ -100,8 +100,8 @@ extension listsController: UITableViewDelegate, UITableViewDataSource
                     self.present(errorAlert, animated: true, completion: nil)
                 }
                 
-                germanLists[indexPath.row].name = listText
-                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
+                languageLists[indexPath.row].name = listText
+                saveToKey(data: JSONEncoder.encode(from: languageLists)!, key: "languageLists")
                 tableView.reloadData()
             })
             renameAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -109,13 +109,13 @@ extension listsController: UITableViewDelegate, UITableViewDataSource
         }
         renameAction.backgroundColor = .link
         
-		if germanLists.count != 1
+		if languageLists.count != 1
         {
             let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { action, sourceView, completitionHandler in
-                germanLists.remove(at: indexPath.row) //always remove from array before removing from tableview with animation
+                languageLists.remove(at: indexPath.row) //always remove from array before removing from tableview with animation
                 if currentList != 0
                 { currentList -= 1; saveToKey(data: String(currentList), key: "currentList") }
-                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
+                saveToKey(data: JSONEncoder.encode(from: languageLists)!, key: "languageLists")
                 tableView.deleteRows(at: [indexPath], with: .automatic)
             }
             let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction, renameAction])

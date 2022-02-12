@@ -24,7 +24,7 @@ class testController: UIViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-		self.title = "Test for \(germanLists[currentList].name)"
+		self.title = "Test for \(languageLists[currentList].name)"
 		self.navigationItem.setHidesBackButton(true, animated: true)
     }
 	
@@ -41,7 +41,7 @@ class testController: UIViewController {
 		currentQuestion = 0
 		questions = []
 		//put words into a random order
-		let testList: [languageObject] = germanLists[currentList].words.shuffled()
+		let testList: [languageObject] = languageLists[currentList].words.shuffled()
 		
 		for word in testList
 		{
@@ -71,7 +71,7 @@ class testController: UIViewController {
 			let answer3 = getRandomElement(list: testList, excluding: [word, answer1, answer2]+excludingWords)//there is some problem with this line (could be because the excluding words is the same length as the list)
             let correctAnswer = word
             
-            let language = germanLists[currentList].language
+            let language = languageLists[currentList].language
             
             if randomNum == 0
             {
@@ -80,7 +80,7 @@ class testController: UIViewController {
             //English to German, 1 word
             else if randomNum == 1
             {
-                questions.append(questionObject(questionText: "What is the German translation of \(word.translation)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "EnglishToGerman"))
+                questions.append(questionObject(questionText: "What is the \(language.capitalized) translation of \(word.translation)", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "EnglishToGerman"))
             }
             //German to English, Sentence
             else if randomNum == 2
@@ -128,7 +128,7 @@ class testController: UIViewController {
             }
             else if questions[currentQuestion].questionType == "EnglishToGerman" //answers in german
             {
-                let language = germanLists[currentList].language
+                let language = languageLists[currentList].language
                 button1Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[0]], language: language), for: .normal)
                 button2Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[1]], language: language), for: .normal)
                 button3Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[2]], language: language), for: .normal)

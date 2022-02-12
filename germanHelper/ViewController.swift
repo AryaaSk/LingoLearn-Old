@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: Notification.Name("reloadView"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(clickedOnWord(notification:)), name: Notification.Name("clickedWord"), object: nil)
-        self.title = "\(germanLists[currentList].name) (\(germanLists[currentList].language.capitalized))"
+        self.title = "\(languageLists[currentList].name) (\(languageLists[currentList].language.capitalized))"
         
         checkWords()
         
@@ -35,12 +35,12 @@ class ViewController: UIViewController {
         
         isLoading = false
         
-        print(germanLists[currentList])
+        print(languageLists[currentList])
 	}
     
     func checkEmptyScreen()
     {
-        if germanLists[currentList].words.count == 0
+        if languageLists[currentList].words.count == 0
         { emptyScreen.isHidden = false }
         else
         { emptyScreen.isHidden = true }
@@ -83,7 +83,7 @@ class ViewController: UIViewController {
 	{
         collectionView.reloadData()
         checkEmptyScreen()
-        self.title = "\(germanLists[currentList].name) (\(germanLists[currentList].language.capitalized))"
+        self.title = "\(languageLists[currentList].name) (\(languageLists[currentList].language.capitalized))"
 	}
 	
 	@IBAction func goToLists(_ sender: Any) {
@@ -91,7 +91,7 @@ class ViewController: UIViewController {
 	}
 	@IBAction func goToTest(_ sender: Any) {
 		//list must have 4 or more items
-		if germanLists[currentList].words.count >= 4
+		if languageLists[currentList].words.count >= 4
 		{
 			self.performSegue(withIdentifier: "startTest", sender: self)
 		}
@@ -109,12 +109,12 @@ class ViewController: UIViewController {
         collectionView.reloadData()
         emptyScreen.isHidden = true //just hide the empty screen as there is guarnteed to be a loading cell
         
-        let language = germanLists[currentList].language
+        let language = languageLists[currentList].language
         
         //MARK: Dont need to edit this part for multiple languages as it will all still be saved as words
         //MARK: The only way this could fail is if there is a word spelt the same across different languages
         
-        //check which words are already in germanWords
+        //check which words are already in languageWords
         var alreadyHave: [languageObject] = []
         var needToGet: [String] = []
         
@@ -122,12 +122,12 @@ class ViewController: UIViewController {
         {
             var i = 0
             var didAdd = false
-            while i != germanWords.count
+            while i != languageWords.count
             {
-                if germanWords[i].original.lowercased() == word.lowercased()
+                if languageWords[i].original.lowercased() == word.lowercased()
                 {
                     //since it already exists we add it to alreadyHave
-                    alreadyHave.append(germanWords[i])
+                    alreadyHave.append(languageWords[i])
                     didAdd = true
                 }
                 i += 1
@@ -140,8 +140,8 @@ class ViewController: UIViewController {
         }
         
         //once we have these we can just add the alreadyHave and get the other words in one api call
-        germanLists[currentList].words.append(contentsOf: alreadyHave)
-        saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
+        languageLists[currentList].words.append(contentsOf: alreadyHave)
+        saveToKey(data: JSONEncoder.encode(from: languageLists)!, key: "languageLists")
         
         if needToGet.count > 0 //check if there are even any words to get
         {
@@ -176,12 +176,12 @@ class ViewController: UIViewController {
                                 print(jsonData)
                                 
                                 //and now just add the data to german words and then the current list
-                                germanWords.append(contentsOf: jsonData.words)
-                                germanLists[currentList].words.append(contentsOf: jsonData.words)
+                                languageWords.append(contentsOf: jsonData.words)
+                                languageLists[currentList].words.append(contentsOf: jsonData.words)
                                 
                                 //save data
-                                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
-                                saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "languageWords")
+                                saveToKey(data: JSONEncoder.encode(from: languageWords)!, key: "languageWords")
+                                saveToKey(data: JSONEncoder.encode(from: languageLists)!, key: "languageLists")
                                 
                                 //reload views
                                 self.collectionView.reloadData()
@@ -222,7 +222,7 @@ class ViewController: UIViewController {
     @IBAction func addWords(_ sender: Any) {
         let alertController = UIAlertController(title: "Add Words", message: "Type 1 or more words separated by a space or a comma.\n\nYou can also scan words in by clicking on the textfield and selecting scan text.", preferredStyle: .alert)
         alertController.addTextField { textfield in
-            textfield.placeholder = "German Words"
+            textfield.placeholder = "\(languageLists[currentList].language.capitalized) Words"
         }
         
         alertController.addAction(UIAlertAction(title: "Add Word(s)", style: .default, handler: { alert in
@@ -281,24 +281,24 @@ class ViewController: UIViewController {
         let tag = notification.userInfo!["tag"] as! Int
         let selectedIndex = tag
         
-        var germanSentence = germanLists[currentList].words[selectedIndex].sentence
-        var englishSentence = germanLists[currentList].words[selectedIndex].sentence_translation
+        var germanSentence = languageLists[currentList].words[selectedIndex].sentence
+        var englishSentence = languageLists[currentList].words[selectedIndex].sentence_translation
         
         if germanSentence == ""
         { germanSentence = "Unavailable" }
         if englishSentence == ""
         { englishSentence = "Unavailable" }
         
-        let language = germanLists[currentList].language
+        let language = languageLists[currentList].language
         
-        var alertMessage = "Translation : " + germanLists[currentList].words[selectedIndex].translation + "\n\n\(language.capitalized) Sentence : " + germanSentence + "\n\nEnglish Translation : " + englishSentence + "\n\nWord Type : " + germanLists[currentList].words[selectedIndex].word_type
-        if germanLists[currentList].words[selectedIndex].gender != "None"
-        { alertMessage = alertMessage + "\n\nGender : " + germanLists[currentList].words[selectedIndex].gender }
+        var alertMessage = "Translation : " + languageLists[currentList].words[selectedIndex].translation + "\n\n\(language.capitalized) Sentence : " + germanSentence + "\n\nEnglish Translation : " + englishSentence + "\n\nWord Type : " + languageLists[currentList].words[selectedIndex].word_type
+        if languageLists[currentList].words[selectedIndex].gender != "None"
+        { alertMessage = alertMessage + "\n\nGender : " + languageLists[currentList].words[selectedIndex].gender }
         
-        let alert = UIAlertController(title: "Word: \(addArticle(object: germanLists[currentList].words[selectedIndex], language: language))", message: alertMessage, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Word: \(addArticle(object: languageLists[currentList].words[selectedIndex], language: language))", message: alertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
-            germanLists[currentList].words.remove(at: selectedIndex) //always remove from array before removing from tableview with animation
-            saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
+            languageLists[currentList].words.remove(at: selectedIndex) //always remove from array before removing from tableview with animation
+            saveToKey(data: JSONEncoder.encode(from: languageLists)!, key: "languageLists")
             self.collectionView.reloadData()
             self.checkEmptyScreen()
         }))
@@ -313,15 +313,15 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource
 {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if isLoading == false
-        { return germanLists[currentList].words.count }
+        { return languageLists[currentList].words.count }
         else
-        { return germanLists[currentList].words.count + 1 }
+        { return languageLists[currentList].words.count + 1 }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! wordCell
         
-        if indexPath.row == germanLists[currentList].words.count
+        if indexPath.row == languageLists[currentList].words.count
         {
             //this is the loading cell since it's indexpath is at the end of the list
             cell.wordButton.setTitle("Loading...", for: .normal)
@@ -329,7 +329,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource
         }
         else
         {
-            cell.wordButton.setTitle(addArticle(object: germanLists[currentList].words[indexPath.row], language: germanLists[currentList].language), for: .normal)
+            cell.wordButton.setTitle(addArticle(object: languageLists[currentList].words[indexPath.row], language: languageLists[currentList].language), for: .normal)
             cell.tag = indexPath.row
             cell.isUserInteractionEnabled = true
         }
