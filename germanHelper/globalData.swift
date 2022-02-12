@@ -137,8 +137,8 @@ func decodeToGermanWords(jsonString: String) -> [languageObject]
 	
 }
 
-var germanWords: [languageObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "germanWords") ?? "")
-var germanLists: [languageList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "germanLists") ?? "")
+var germanWords: [languageObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "languageWords") ?? "")
+var germanLists: [languageList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "languageLists") ?? "")
 var currentList: Int = Int(UserDefaults.standard.string(forKey: "currentList") ?? "0")!
 
 extension StringProtocol {

@@ -141,7 +141,7 @@ class ViewController: UIViewController {
         
         //once we have these we can just add the alreadyHave and get the other words in one api call
         germanLists[currentList].words.append(contentsOf: alreadyHave)
-        saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+        saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
         
         if needToGet.count > 0 //check if there are even any words to get
         {
@@ -180,8 +180,8 @@ class ViewController: UIViewController {
                                 germanLists[currentList].words.append(contentsOf: jsonData.words)
                                 
                                 //save data
-                                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-                                saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "germanWords")
+                                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
+                                saveToKey(data: JSONEncoder.encode(from: germanWords)!, key: "languageWords")
                                 
                                 //reload views
                                 self.collectionView.reloadData()
@@ -298,7 +298,7 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "Word: \(addArticle(object: germanLists[currentList].words[selectedIndex], language: language))", message: alertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
             germanLists[currentList].words.remove(at: selectedIndex) //always remove from array before removing from tableview with animation
-            saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+            saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
             self.collectionView.reloadData()
             self.checkEmptyScreen()
         }))

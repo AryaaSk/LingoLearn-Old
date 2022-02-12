@@ -37,7 +37,7 @@ class listsController: UIViewController {
             {
                 let textfield = alertController.textFields![0] as UITextField
                 germanLists.append(languageList(name: textfield.text!, language: language, words: []))
-                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
                 self.tableView.reloadData()
                 
                 currentList = germanLists.count - 1 //new list
@@ -101,7 +101,7 @@ extension listsController: UITableViewDelegate, UITableViewDataSource
                 }
                 
                 germanLists[indexPath.row].name = listText
-                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
                 tableView.reloadData()
             })
             renameAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -115,7 +115,7 @@ extension listsController: UITableViewDelegate, UITableViewDataSource
                 germanLists.remove(at: indexPath.row) //always remove from array before removing from tableview with animation
                 if currentList != 0
                 { currentList -= 1; saveToKey(data: String(currentList), key: "currentList") }
-                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "languageLists")
                 tableView.deleteRows(at: [indexPath], with: .automatic)
             }
             let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction, renameAction])
