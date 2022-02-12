@@ -90,6 +90,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Aoz-jv-TYa">
+                        <nil key="title"/>
                         <barButtonItem key="leftBarButtonItem" title="Lists" id="InE-r0-lfv">
                             <connections>
                                 <action selector="goToLists:" destination="BYZ-38-t0r" id="ALu-ta-mal"/>

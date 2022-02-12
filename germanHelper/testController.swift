@@ -71,9 +71,11 @@ class testController: UIViewController {
 			let answer3 = getRandomElement(list: testList, excluding: [word, answer1, answer2]+excludingWords)//there is some problem with this line (could be because the excluding words is the same length as the list)
             let correctAnswer = word
             
+            let language = germanLists[currentList].language
+            
             if randomNum == 0
             {
-                questions.append(questionObject(questionText: "What is the English translation of \(addArticle(object: word))", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglish"))
+                questions.append(questionObject(questionText: "What is the English translation of \(addArticle(object: word, language: language))", answers: [answer1, answer2, answer3, correctAnswer], correctAnswer: correctAnswer, questionType: "GermanToEnglish"))
             }
             //English to German, 1 word
             else if randomNum == 1
@@ -126,11 +128,11 @@ class testController: UIViewController {
             }
             else if questions[currentQuestion].questionType == "EnglishToGerman" //answers in german
             {
-                
-                button1Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[0]]), for: .normal)
-                button2Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[1]]), for: .normal)
-                button3Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[2]]), for: .normal)
-                button4Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[3]]), for: .normal)
+                let language = germanLists[currentList].language
+                button1Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[0]], language: language), for: .normal)
+                button2Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[1]], language: language), for: .normal)
+                button3Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[2]], language: language), for: .normal)
+                button4Outlet.setTitle(addArticle(object: questions[currentQuestion].answers[answerIndexList[3]], language: language), for: .normal)
             }
             else if questions[currentQuestion].questionType == "GermanToEnglishSentence"
             {
@@ -229,7 +231,7 @@ class testController: UIViewController {
 	
 	func getRandomElement(list: [languageObject], excluding: [languageObject]) -> languageObject
 	{
-        if list.count == excluding.count //check if the excluding is the same length as the list
+        if list.count <= excluding.count //check if the excluding is the same length or smaller, this should not be happening but I can't fix it right now so this is the temporary fix
         {
             //im not sure what happened but this seems to solve the issue, THIS IS PROBABLY ONLY A TEMPORARY FIX THOUGH
             return list[0]
@@ -238,7 +240,7 @@ class testController: UIViewController {
         //THIS ERROR IS CAUSED BY THE LIST BEING THE SAME AS THE EXCLUDING LIST SO THE checkElementContained function never returns false
 		var randomIndex = Int.random(in: 0...list.count-1)
 		while checkElementContained(list: excluding, element: list[randomIndex]) == true //the problem is in this loop
-        { randomIndex = Int.random(in: 0...list.count-1); } //this causes an infinite loop
+        { randomIndex = Int.random(in: 0...list.count-1)} //this causes an infinite loop sometimes
 		return list[randomIndex]
 	}
 	func checkElementContained(list: [languageObject], element: languageObject) -> Bool

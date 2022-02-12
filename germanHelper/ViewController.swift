@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: Notification.Name("reloadView"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(clickedOnWord(notification:)), name: Notification.Name("clickedWord"), object: nil)
-		self.title = germanLists[currentList].name
+        self.title = "\(germanLists[currentList].name) (\(germanLists[currentList].language.capitalized))"
         
         checkWords()
         
@@ -34,6 +34,8 @@ class ViewController: UIViewController {
         checkEmptyScreen()
         
         isLoading = false
+        
+        print(germanLists[currentList])
 	}
     
     func checkEmptyScreen()
@@ -81,7 +83,7 @@ class ViewController: UIViewController {
 	{
         collectionView.reloadData()
         checkEmptyScreen()
-		self.title = germanLists[currentList].name
+        self.title = "\(germanLists[currentList].name) (\(germanLists[currentList].language.capitalized))"
 	}
 	
 	@IBAction func goToLists(_ sender: Any) {
@@ -106,6 +108,11 @@ class ViewController: UIViewController {
         isLoading = true
         collectionView.reloadData()
         emptyScreen.isHidden = true //just hide the empty screen as there is guarnteed to be a loading cell
+        
+        let language = germanLists[currentList].language
+        
+        //MARK: Dont need to edit this part for multiple languages as it will all still be saved as words
+        //MARK: The only way this could fail is if there is a word spelt the same across different languages
         
         //check which words are already in germanWords
         var alreadyHave: [languageObject] = []
@@ -150,7 +157,7 @@ class ViewController: UIViewController {
             for word in needToGet
             {
                 //now just call the api (uses linguee external API but if that fails it uses the old scrapper API)
-                let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?wordList=" + word
+                let urlString = "https://aryaagermantranslatorapi.azurewebsites.net/api/germantranslation?wordList=" + word + "&language=" + language
                 let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)
                 let url = URL(string: encoded!)
                 
@@ -236,7 +243,7 @@ class ViewController: UIViewController {
             
             var wordList = String(textList).components(separatedBy: [" "]).filter({!$0.isEmpty})
             //filter out the words like ein, eine, einen, der, die, das
-            let removeWords = ["ein", "eine", "einen", "der", "die", "das", "dem", "zu", "zur", "zum", "und", "am", "im", "um"]
+            let removeWords = ["ein", "eine", "einen", "der", "die", "das", "dem", "zu", "zur", "zum", "und", "am", "im", "um"] + ["le", "la", "les", "un", "une", "des", "du", "de"] + ["el", "la", "los", "las"]
             
             i = 0
             while i != wordList.count
@@ -282,11 +289,13 @@ class ViewController: UIViewController {
         if englishSentence == ""
         { englishSentence = "Unavailable" }
         
-        var alertMessage = "Translation : " + germanLists[currentList].words[selectedIndex].translation + "\n\nGerman Sentence : " + germanSentence + "\n\nEnglish Translation : " + englishSentence + "\n\nWord Type : " + germanLists[currentList].words[selectedIndex].word_type
+        let language = germanLists[currentList].language
+        
+        var alertMessage = "Translation : " + germanLists[currentList].words[selectedIndex].translation + "\n\n\(language.capitalized) Sentence : " + germanSentence + "\n\nEnglish Translation : " + englishSentence + "\n\nWord Type : " + germanLists[currentList].words[selectedIndex].word_type
         if germanLists[currentList].words[selectedIndex].gender != "None"
         { alertMessage = alertMessage + "\n\nGender : " + germanLists[currentList].words[selectedIndex].gender }
         
-        let alert = UIAlertController(title: "Word: \(addArticle(object: germanLists[currentList].words[selectedIndex]))", message: alertMessage, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Word: \(addArticle(object: germanLists[currentList].words[selectedIndex], language: language))", message: alertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
             germanLists[currentList].words.remove(at: selectedIndex) //always remove from array before removing from tableview with animation
             saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
@@ -320,7 +329,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource
         }
         else
         {
-            cell.wordButton.setTitle(addArticle(object: germanLists[currentList].words[indexPath.row]), for: .normal)
+            cell.wordButton.setTitle(addArticle(object: germanLists[currentList].words[indexPath.row], language: germanLists[currentList].language), for: .normal)
             cell.tag = indexPath.row
             cell.isUserInteractionEnabled = true
         }

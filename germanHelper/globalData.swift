@@ -7,11 +7,6 @@
 
 import Foundation
 
-enum language
-{
-    case german
-}
-
 struct languageObject: Codable
 {
 	var original: String
@@ -27,23 +22,45 @@ struct languageObject: Codable
 }
 struct languageList: Codable {
 	var name: String
+    let language: String
 	var words: [languageObject]
 }
 
-func addArticle(object: languageObject) -> String
+func addArticle(object: languageObject, language: String) -> String
 {
     var original = object.original
     //return the original but with an article if its a noun, I can just display this instead of the raw original
     if object.word_type == "Noun"
     {
-        //we know its a noun so we can just add the article
-        //add der, die or das
-        if object.gender == "Masculine"
-        { original = "der " + original }
-        if object.gender == "Feminine"
-        { original = "die " + original }
-        if object.gender == "Neuter"
-        { original = "das " + original }
+        if language.lowercased() == "german"
+        {
+            //we know its a noun so we can just add the article
+            //add der, die or das
+            if object.gender == "Masculine"
+            { original = "der " + original }
+            if object.gender == "Feminine"
+            { original = "die " + original }
+            if object.gender == "Neuter"
+            { original = "das " + original }
+        }
+        else if language.lowercased() == "french"
+        {
+            if object.gender == "Masculine"
+            { original = "le " + original }
+            if object.gender == "Feminine"
+            { original = "la " + original }
+            if object.gender == "Neuter"
+            { original = "les " + original }
+        }
+        else if language.lowercased() == "spanish"
+        {
+            if object.gender == "Masculine"
+            { original = "el " + original }
+            if object.gender == "Feminine"
+            { original = "la " + original }
+            if object.gender == "Neuter"
+            { original = "los " + original }
+        }
     }
     
     return original
@@ -99,7 +116,10 @@ func decodeToGermanLists(jsonString: String) -> [languageList]
 	}
 	catch
 	{
-		return [languageList(name: "New List", words: [])] //so there is always at least one list so the app doesn't crash
+        //since it cant decode it, there must be a new data structure, we need to set currentList to 0 as well
+        currentList = 0
+        saveToKey(data: String(currentList), key: "currentList")
+        return [languageList(name: "New List", language: "german", words: [])] //so there is always at least one list so the app doesn't crash
 	}
 }
 func decodeToGermanWords(jsonString: String) -> [languageObject]

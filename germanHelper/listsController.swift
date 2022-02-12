@@ -26,16 +26,32 @@ class listsController: UIViewController {
 		alertController.addTextField { textfield in
 			textfield.placeholder = "List Name"
 		}
+        alertController.addTextField { languageTextfield in
+            languageTextfield.placeholder = "German, French, or Spanish"
+        }
 		alertController.addAction(UIAlertAction(title: "Create", style: .default, handler: { alert in
-			let textfield = alertController.textFields![0] as UITextField
-			germanLists.append(languageList(name: textfield.text!, words: []))
-			saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
-			self.tableView.reloadData()
-			
-			currentList = germanLists.count - 1 //new list
-            saveToKey(data: String(currentList), key: "currentList")
-			NotificationCenter.default.post(Notification(name: Notification.Name("reloadView")))
-			self.dismiss(animated: true, completion: nil)
+            let languageTextfield = alertController.textFields![1] as UITextField
+            let language = languageTextfield.text!.lowercased()
+            print(language)
+            if language == "german" || language == "french" || language == "spanish"
+            {
+                let textfield = alertController.textFields![0] as UITextField
+                germanLists.append(languageList(name: textfield.text!, language: language, words: []))
+                saveToKey(data: JSONEncoder.encode(from: germanLists)!, key: "germanLists")
+                self.tableView.reloadData()
+                
+                currentList = germanLists.count - 1 //new list
+                saveToKey(data: String(currentList), key: "currentList")
+                NotificationCenter.default.post(Notification(name: Notification.Name("reloadView")))
+                self.dismiss(animated: true, completion: nil)
+            }
+            else
+            {
+                //create a new alert
+                let warningAlert = UIAlertController(title: "Invalid Language", message: "Please type one of the 3 languages in the language textfield\n(German, French or Spanish)", preferredStyle: .alert)
+                warningAlert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                self.present(warningAlert, animated: true, completion: nil)
+            }
 		}))
 		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 		self.present(alertController, animated: true, completion: nil)
