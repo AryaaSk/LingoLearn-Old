@@ -9,6 +9,7 @@ import UIKit
 
 class listsController: UIViewController {
 
+    @IBOutlet var emptyScreen: EmptyScreen!
     @IBOutlet var languageControl: UISegmentedControl!
     var showingLists: [languageList] = [] //instead of using languageLists, use this instead
     @IBOutlet var tableView: UITableView!
@@ -18,7 +19,6 @@ class listsController: UIViewController {
 		tableView.delegate = self
 		tableView.dataSource = self
         
-        print(languageLists)
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -72,6 +72,14 @@ class listsController: UIViewController {
             if List.language.lowercased() == currentLanguage
             { showingLists.append(List) }
         }
+        
+        //since this gets called everytime the list changes, we can also use this oppurtunity to show/hide the empty screen
+        emptyScreen.viewLabel.text = "You don't have any \(currentLanguage.capitalized) Lists, click the New List button to get started"
+        emptyScreen.imageView.image = UIImage(systemName: "book")
+        if showingLists.count == 0
+        { emptyScreen.isHidden = false }
+        else
+        { emptyScreen.isHidden = true }
     }
     
     func getListIndex(name: String) -> Int
@@ -87,7 +95,7 @@ class listsController: UIViewController {
     }
     
     @IBAction func newList(_ sender: Any) {
-		let alertController = UIAlertController(title: "Add New List", message: "Use these lists for different topics you want to study", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Add New \(currentLanguage.capitalized) List", message: "Use these lists for different topics you want to study", preferredStyle: .alert)
 		alertController.addTextField { textfield in
 			textfield.placeholder = "List Name"
 		}

@@ -225,11 +225,19 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cPC-fC-yZ7" customClass="EmptyScreen" customModule="germanHelper" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="88" width="390" height="756"/>
+                                <color key="backgroundColor" systemColor="systemRedColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="XYm-yQ-8b4"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="VqI-Sg-w0A" firstAttribute="top" secondItem="XYm-yQ-8b4" secondAttribute="top" id="4gP-Sv-Y6L"/>
+                            <constraint firstItem="cPC-fC-yZ7" firstAttribute="top" secondItem="XYm-yQ-8b4" secondAttribute="top" id="8eo-ca-xhW"/>
+                            <constraint firstItem="cPC-fC-yZ7" firstAttribute="leading" secondItem="XYm-yQ-8b4" secondAttribute="leading" id="DpH-m3-7SO"/>
+                            <constraint firstItem="XYm-yQ-8b4" firstAttribute="trailing" secondItem="cPC-fC-yZ7" secondAttribute="trailing" id="G3S-Xb-73M"/>
+                            <constraint firstAttribute="bottom" secondItem="cPC-fC-yZ7" secondAttribute="bottom" id="GSM-9J-EQB"/>
                             <constraint firstItem="VqI-Sg-w0A" firstAttribute="leading" secondItem="XYm-yQ-8b4" secondAttribute="leading" id="NPW-R1-KR3"/>
                             <constraint firstAttribute="bottom" secondItem="VqI-Sg-w0A" secondAttribute="bottom" id="OBH-PB-yjB"/>
                             <constraint firstItem="XYm-yQ-8b4" firstAttribute="trailing" secondItem="VqI-Sg-w0A" secondAttribute="trailing" id="rBu-NE-szZ"/>
@@ -256,13 +264,14 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="emptyScreen" destination="cPC-fC-yZ7" id="PeF-dO-t6D"/>
                         <outlet property="languageControl" destination="oNh-i8-Imm" id="cBq-35-SeU"/>
                         <outlet property="tableView" destination="VqI-Sg-w0A" id="wpL-8R-Had"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="p1u-2i-QCH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1936" y="868"/>
+            <point key="canvasLocation" x="1935.3846153846152" y="867.29857819905214"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="N7v-AN-m9Z">
