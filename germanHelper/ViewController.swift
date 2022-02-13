@@ -366,4 +366,4 @@ extension UIView {
     }
 }
 
-//changed folder name to LingoLearn
+//may consider just downloading the github repo as a zip file and creating a new repo, since there are many complications due to the name change
