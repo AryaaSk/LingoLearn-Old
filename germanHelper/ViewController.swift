@@ -11,14 +11,14 @@ class ViewController: UIViewController {
 	
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var addWordButton: UIButton!
+    @IBOutlet var testButton: UIBarButtonItem!
+    @IBOutlet var listsButton: UIBarButtonItem!
     @IBOutlet var emptyScreen: EmptyScreen!
     
     var isLoading = false
     
     override func viewDidLoad() {
 		super.viewDidLoad()
-		
-        
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -40,6 +40,20 @@ class ViewController: UIViewController {
     
     func checkEmptyScreen()
     {
+        //this function gets called whenever there is a change to the tableview, so we can also check if the loading state is active, and disable the other buttons
+        if isLoading == true
+        {
+            addWordButton.isEnabled = false
+            testButton.isEnabled = false
+            listsButton.isEnabled = false
+        }
+        else
+        {
+            addWordButton.isEnabled = true
+            testButton.isEnabled = true
+            listsButton.isEnabled = true
+        }
+        
         if languageLists[currentList].words.count == 0
         { emptyScreen.isHidden = false }
         else
@@ -107,6 +121,7 @@ class ViewController: UIViewController {
     {
         isLoading = true
         collectionView.reloadData()
+        checkEmptyScreen()
         emptyScreen.isHidden = true //just hide the empty screen as there is guarnteed to be a loading cell
         
         let language = languageLists[currentList].language
@@ -145,7 +160,7 @@ class ViewController: UIViewController {
         
         if needToGet.count > 0 //check if there are even any words to get
         {
-            /*
+            /* //used to use this when i sent the entire request as one, changed it as i wanted the user to see the words being added
             var wordList = ""
             for word in needToGet
             { wordList = wordList + word + "_" }
@@ -190,6 +205,7 @@ class ViewController: UIViewController {
                                 if wordCount == 0 //checking if all words have been loaded, if so then we end the loading
                                 {
                                     self.isLoading = false
+                                    self.checkEmptyScreen()
                                 }
                             }
                             catch
@@ -203,6 +219,7 @@ class ViewController: UIViewController {
                                 if wordCount == 0
                                 {
                                     self.isLoading = false
+                                    self.checkEmptyScreen()
                                 }
                             }
                         }

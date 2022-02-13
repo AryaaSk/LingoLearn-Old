@@ -106,6 +106,8 @@
                         <outlet property="addWordButton" destination="WrC-tY-GZf" id="pMe-rW-bnt"/>
                         <outlet property="collectionView" destination="uWQ-SO-sFg" id="Boq-hr-FfD"/>
                         <outlet property="emptyScreen" destination="hpv-fZ-356" id="Tle-Ej-ovH"/>
+                        <outlet property="listsButton" destination="InE-r0-lfv" id="hT2-eV-y23"/>
+                        <outlet property="testButton" destination="gb1-pI-Kf3" id="buY-TO-dJy"/>
                         <segue destination="1qY-BZ-CGL" kind="show" identifier="lists" id="wmw-6o-FsV"/>
                         <segue destination="LIH-U0-sFP" kind="show" identifier="startTest" id="SF1-xE-Ki6"/>
                     </connections>
@@ -201,7 +203,7 @@
             </objects>
             <point key="canvasLocation" x="1935" y="117"/>
         </scene>
-        <!--Lists-->
+        <!--Lists Controller-->
         <scene sceneID="2DZ-6A-myt">
             <objects>
                 <viewController id="SoX-rf-1bl" customClass="listsController" customModule="germanHelper" customModuleProvider="target" sceneMemberID="viewController">
@@ -233,7 +235,20 @@
                             <constraint firstItem="XYm-yQ-8b4" firstAttribute="trailing" secondItem="VqI-Sg-w0A" secondAttribute="trailing" id="rBu-NE-szZ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Lists" id="vHB-3w-zCT">
+                    <navigationItem key="navigationItem" id="vHB-3w-zCT">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="oNh-i8-Imm">
+                            <rect key="frame" x="8" y="5.6666666666666679" width="294" height="33"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="German Lists"/>
+                                <segment title="French Lists"/>
+                                <segment title="Spanish Lists"/>
+                            </segments>
+                            <connections>
+                                <action selector="languageChanged:" destination="SoX-rf-1bl" eventType="valueChanged" id="su6-kV-093"/>
+                            </connections>
+                        </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" title="New List" id="umT-1N-pQS">
                             <connections>
                                 <action selector="newList:" destination="SoX-rf-1bl" id="caV-Jh-zUG"/>
@@ -241,6 +256,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="languageControl" destination="oNh-i8-Imm" id="cBq-35-SeU"/>
                         <outlet property="tableView" destination="VqI-Sg-w0A" id="wpL-8R-Had"/>
                     </connections>
                 </viewController>

@@ -140,6 +140,7 @@ func decodeToGermanWords(jsonString: String) -> [languageObject]
 var languageWords: [languageObject] = decodeToGermanWords(jsonString: UserDefaults.standard.string(forKey: "languageWords") ?? "")
 var languageLists: [languageList] = decodeToGermanLists(jsonString: UserDefaults.standard.string(forKey: "languageLists") ?? "")
 var currentList: Int = Int(UserDefaults.standard.string(forKey: "currentList") ?? "0")!
+var currentLanguage = UserDefaults.standard.string(forKey: "currentLanguage") ?? "german"
 
 extension StringProtocol {
     subscript(_ offset: Int)                     -> Element     { self[index(startIndex, offsetBy: offset)] }
