@@ -162,3 +162,5 @@ def saveToFirebase(data, language, word):
     firebase = pyrebase.initialize_app(config)
     db = firebase.database()
     db.child("data/" + language + "English/" + word).set(data)
+
+#testing github from vscode
