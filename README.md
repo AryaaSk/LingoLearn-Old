@@ -1,4 +1,6 @@
 # LingoLearn
+### Legacy repo, I am only keeping it as it has all the previous commits, and I had to create a new repo to rename some files
+
 This app used to just be for german words, but I expanded it to include French and Spanish as well, however a lot of files are still named germanHelper or german... because of this
 
 ## An App which lets you add language vocabulary words and converts them to english, gives you example sentences in both languages and tests you
